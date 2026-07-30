@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -117,4 +117,282 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="mainMenu.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>17, 17</value>
+  </data>
+  <data name="mainMenu.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="mainMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1409, 32</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="mainMenu.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="mainMenu.Text" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;mainMenu.Name" xml:space="preserve">
+    <value>mainMenu</value>
+  </data>
+  <data name="&gt;&gt;mainMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mainMenu.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;mainMenu.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="TZIPToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 28</value>
+  </data>
+  <data name="TZIPToolStripMenuItem.Text" xml:space="preserve">
+    <value>TZIP</value>
+  </data>
+  <data name="OpenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 28</value>
+  </data>
+  <data name="OpenToolStripMenuItem.Text" xml:space="preserve">
+    <value>打开...</value>
+  </data>
+  <data name="UnzipToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 28</value>
+  </data>
+  <data name="UnzipToolStripMenuItem.Text" xml:space="preserve">
+    <value>解压...</value>
+  </data>
+  <data name="ZipToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 28</value>
+  </data>
+  <data name="ZipToolStripMenuItem.Text" xml:space="preserve">
+    <value>压缩...</value>
+  </data>
+  <data name="SettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 28</value>
+  </data>
+  <data name="SettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="&gt;&gt;mainTab.Name" xml:space="preserve">
+    <value>mainTab</value>
+  </data>
+  <data name="&gt;&gt;mainTab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mainTab.Parent" xml:space="preserve">
+    <value>mainTabControl</value>
+  </data>
+  <data name="&gt;&gt;mainTab.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="mainTabControl.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="mainTabControl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 32</value>
+  </data>
+  <data name="mainTabControl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1409, 764</value>
+  </data>
+  <data name="mainTabControl.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;mainTabControl.Name" xml:space="preserve">
+    <value>mainTabControl</value>
+  </data>
+  <data name="&gt;&gt;mainTabControl.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mainTabControl.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;mainTabControl.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>418, 17</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.Name" xml:space="preserve">
+    <value>statusStrip1</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.StatusStrip, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.Parent" xml:space="preserve">
+    <value>mainTab</value>
+  </data>
+  <data name="&gt;&gt;statusStrip1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;fileBox.Name" xml:space="preserve">
+    <value>fileBox</value>
+  </data>
+  <data name="&gt;&gt;fileBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;fileBox.Parent" xml:space="preserve">
+    <value>mainTab</value>
+  </data>
+  <data name="&gt;&gt;fileBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="mainTab.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 33</value>
+  </data>
+  <data name="mainTab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="mainTab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1401, 727</value>
+  </data>
+  <data name="mainTab.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="mainTab.Text" xml:space="preserve">
+    <value>无文件</value>
+  </data>
+  <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 693</value>
+  </data>
+  <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1395, 31</value>
+  </data>
+  <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="statusStrip1.Text" xml:space="preserve">
+    <value>statusStrip1</value>
+  </data>
+  <data name="toolStripProgressBar1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 23</value>
+  </data>
+  <data name="statusLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>118, 24</value>
+  </data>
+  <data name="statusLabel.Text" xml:space="preserve">
+    <value>软件正在准备</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="fileBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="fileBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="fileBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1395, 721</value>
+  </data>
+  <data name="fileBox.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="mainOpenFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing">
+    <value>175, 17</value>
+  </data>
+  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>11, 24</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>1409, 796</value>
+  </data>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAAAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAA
+        AADo6ejo6Ojm5ubm5ubp6ent7e3o6Ojo6Ojm5ubm5ubq6uro6ejo6Ojo6Ojn5+fm5+fo6Ojo6Ojm5ubm
+        5ubo6Ojp6enn5+fo6Ojm5ubq6urq6urm5ubo6Ojo6Ojm5ubm5ubm5ubm5ubo6Ojo6Ojk5eaLr982geQw
+        Y6w0Za0xfd+OsuPl5ufm5ubm5+bo6Ojo6Ojm5ubm5ubo6Ojc4OU/heEBaOcBbeova7kya7YBbeoBaeg7
+        gt/c4Obm5ubo6Ojo6Ojo6Ojo6Ojm5uZQj+ICaugBcuwBdu45dbszcr4Bd+4BcuwBa+lLi97o6Ojm5ubm
+        5ubo6Ojo6OixxeABZ+YCcusBee8Bf/I1ecI7e78Bf/EAefABcewBZ+a0yOTp6ent7e3m5ubm5uZonOIB
+        bOkBdu4Bf/EBhvQ9f8I2fMMAhfQAfvEBdu4Ba+pnnOLm5ubm5ubm5ubm5uZHiuIBbuoBeO8Gg/MKjfZC
+        fLNHfrAJjfYGg/MBeO8BbepGiuLm5ubm5ubp6eno6OhNjuEBbuofhvEplPUpm/dtka9nj68om/gplPUf
+        hvEBbepKi+Do6Ojo6Ojm5ubm5uZ7p+EbeuxMnPNKovZIpvdvkrVskLNIpvhJovZLnPMaeOt6puHo6Ojo
+        6Ojo6Ojo6OjP2OQxgedurPVsr/ZqsfV/kKSBkKNqsfVrr/Ztq/QygejP2OTm5ubm5ubo6Ojo6Ojm5uaL
+        sN9yqvKOv/dqmdJEhso5gs1pmdOOvvdxqvKPs+Po6Ojm5ubm5ubn5+fn5+fo6Ojo6OiRtOFilttJfLwD
+        b+kIc7NCe6Jil9yUt+Tm5ubm5+fo6ejo6ejm5ubm5+bo6Ojo6Ojm5ube4eSRtOFlnuQtlEUakzKCwZro
+        6Ojm5+bm5ubo6Ojo6Ojp6eno6ejn5+fm5+fo6Ojo6Ojm5+bm5ubB28pmwYlDunPi5eTo6Ojo6Ojn5+fn
+        5+fo6Ojo6Ojm5+fm5+fo6Ojo6Ojm5+fm5+fo6Ojo6Ojm5ubm5ubo6Ojo6Ojn5+fn5+cAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>TZIP</value>
+  </data>
+  <data name="&gt;&gt;TZIPToolStripMenuItem.Name" xml:space="preserve">
+    <value>TZIPToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;TZIPToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;OpenToolStripMenuItem.Name" xml:space="preserve">
+    <value>OpenToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;OpenToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;UnzipToolStripMenuItem.Name" xml:space="preserve">
+    <value>UnzipToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;UnzipToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ZipToolStripMenuItem.Name" xml:space="preserve">
+    <value>ZipToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ZipToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;SettingsToolStripMenuItem.Name" xml:space="preserve">
+    <value>SettingsToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;SettingsToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripProgressBar1.Name" xml:space="preserve">
+    <value>toolStripProgressBar1</value>
+  </data>
+  <data name="&gt;&gt;toolStripProgressBar1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripProgressBar, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;statusLabel.Name" xml:space="preserve">
+    <value>statusLabel</value>
+  </data>
+  <data name="&gt;&gt;statusLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;mainOpenFileDialog.Name" xml:space="preserve">
+    <value>mainOpenFileDialog</value>
+  </data>
+  <data name="&gt;&gt;mainOpenFileDialog.Type" xml:space="preserve">
+    <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>Form1</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="readytext" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="uninstallFileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>164, 28</value>
+  </data>
+  <data name="uninstallFileToolStripMenuItem.Text" xml:space="preserve">
+    <value>移除文件(不删除)</value>
+  </data>
+  <data name="&gt;&gt;uninstallFileToolStripMenuItem.Name" xml:space="preserve">
+    <value>uninstallFileToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;uninstallFileToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="NotACompressedFile" xml:space="preserve">
+    <value>不是压缩文件</value>
+  </data>
 </root>
