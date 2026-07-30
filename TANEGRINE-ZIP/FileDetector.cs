@@ -89,7 +89,10 @@ namespace TANEGRINE_ZIP
             const int BufferSize = 32768;
 
             byte[] buffer = new byte[BufferSize];
-
+            if (path==string.Empty)
+            {
+                return FileType.Unknown;//No file,cannot detect
+            }
             using FileStream fs = new(path, FileMode.Open, FileAccess.Read);
 
             int read = fs.Read(buffer, 0, BufferSize);

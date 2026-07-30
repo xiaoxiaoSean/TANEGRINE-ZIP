@@ -117,44 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="TZIPToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>63, 28</value>
+  <data name="compressText" xml:space="preserve">
+    <value>压缩</value>
   </data>
-  <data name="TZIPToolStripMenuItem.Text" xml:space="preserve">
-    <value>TZIP</value>
-  </data>
-  <data name="UnzipToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>86, 28</value>
-  </data>
-  <data name="UnzipToolStripMenuItem.Text" xml:space="preserve">
-    <value>Unzip...</value>
-  </data>
-  <data name="ZipToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>82, 28</value>
-  </data>
-  <data name="ZipToolStripMenuItem.Text" xml:space="preserve">
-    <value>zip...</value>
-  </data>
-  <data name="SettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>88, 28</value>
-  </data>
-  <data name="SettingsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="mainTab.Text" xml:space="preserve">
-    <value>No file</value>
-  </data>
-  <data name="statusLabel.Text" xml:space="preserve">
-    <value>software is preparing</value>
-  </data>
-  <data name="readytext" xml:space="preserve">
-    <value>ready</value>
-  </data>
-  <data name="uninstallFileToolStripMenuItem.Text" xml:space="preserve">
-    <value>remove file(Not delete)</value>
+  <data name="extractText" xml:space="preserve">
+    <value>解压</value>
   </data>
   <data name="NotACompressedFile" xml:space="preserve">
-    <value>Not a compressed file</value>
+    <value>不是一个压缩文件</value>
+  </data>
+  <data name="OpeningFile" xml:space="preserve">
+    <value>正在打开文件...</value>
+  </data>
+  <data name="readytext" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="settingsText" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="uninstallFileText" xml:space="preserve">
+    <value>卸载文件(不是删除)</value>
   </data>
 </root>
