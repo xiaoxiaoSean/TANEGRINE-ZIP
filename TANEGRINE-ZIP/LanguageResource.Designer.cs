@@ -79,6 +79,15 @@ namespace TANEGRINE_ZIP {
         }
         
         /// <summary>
+        ///   查找类似 主页 的本地化字符串。
+        /// </summary>
+        internal static string mainTabText {
+            get {
+                return ResourceManager.GetString("mainTabText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 不是一个压缩文件 的本地化字符串。
         /// </summary>
         internal static string NotACompressedFile {
@@ -93,6 +102,15 @@ namespace TANEGRINE_ZIP {
         internal static string OpeningFile {
             get {
                 return ResourceManager.GetString("OpeningFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 打开 的本地化字符串。
+        /// </summary>
+        internal static string openText {
+            get {
+                return ResourceManager.GetString("openText", resourceCulture);
             }
         }
         

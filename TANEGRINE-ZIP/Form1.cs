@@ -15,10 +15,12 @@ namespace TANEGRINE_ZIP
         {
             statusLabel.Text = LanguageManager.Get("readytext");
             uninstallFileToolStripMenuItem.Visible = false;
+            OpenToolStripMenuItem.Text = LanguageManager.Get("openText");
             extractToolStripMenuItem.Text = LanguageManager.Get("extractText");
             compressToolStripMenuItem.Text = LanguageManager.Get("compressText");
             SettingsToolStripMenuItem.Text = LanguageManager.Get("settingsText");
             uninstallFileToolStripMenuItem.Text = LanguageManager.Get("uninstallFileText");
+            mainTab.Text = LanguageManager.Get("mainTabText");
         }
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {

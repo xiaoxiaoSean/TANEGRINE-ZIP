@@ -123,11 +123,17 @@
   <data name="extractText" xml:space="preserve">
     <value>extract</value>
   </data>
+  <data name="mainTabText" xml:space="preserve">
+    <value>home</value>
+  </data>
   <data name="NotACompressedFile" xml:space="preserve">
     <value>Not a compressed file</value>
   </data>
   <data name="OpeningFile" xml:space="preserve">
     <value>Opening the file...</value>
+  </data>
+  <data name="openText" xml:space="preserve">
+    <value>Open</value>
   </data>
   <data name="readytext" xml:space="preserve">
     <value>ready</value>
@@ -136,6 +142,6 @@
     <value>settings</value>
   </data>
   <data name="uninstallFileText" xml:space="preserve">
-    <value>uninstall file(not delete)</value>
+    <value>uninstall the file(not delete)</value>
   </data>
 </root>

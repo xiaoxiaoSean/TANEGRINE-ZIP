@@ -123,11 +123,17 @@
   <data name="extractText" xml:space="preserve">
     <value>解压</value>
   </data>
+  <data name="mainTabText" xml:space="preserve">
+    <value>主页</value>
+  </data>
   <data name="NotACompressedFile" xml:space="preserve">
     <value>不是一个压缩文件</value>
   </data>
   <data name="OpeningFile" xml:space="preserve">
     <value>正在打开文件...</value>
+  </data>
+  <data name="openText" xml:space="preserve">
+    <value>打开</value>
   </data>
   <data name="readytext" xml:space="preserve">
     <value>就绪</value>

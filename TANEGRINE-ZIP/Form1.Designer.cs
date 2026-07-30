@@ -67,32 +67,33 @@
             // OpenToolStripMenuItem
             // 
             OpenToolStripMenuItem.Name = "OpenToolStripMenuItem";
-            OpenToolStripMenuItem.Size = new Size(16, 28);
+            OpenToolStripMenuItem.Size = new Size(74, 28);
+            OpenToolStripMenuItem.Text = "Open";
             OpenToolStripMenuItem.Click += OpenToolStripMenuItem_Click;
             // 
             // extractToolStripMenuItem
             // 
             extractToolStripMenuItem.Name = "extractToolStripMenuItem";
-            extractToolStripMenuItem.Size = new Size(74, 28);
-            extractToolStripMenuItem.Text = "解压...";
+            extractToolStripMenuItem.Size = new Size(85, 28);
+            extractToolStripMenuItem.Text = "extract";
             // 
             // compressToolStripMenuItem
             // 
             compressToolStripMenuItem.Name = "compressToolStripMenuItem";
-            compressToolStripMenuItem.Size = new Size(74, 28);
-            compressToolStripMenuItem.Text = "压缩...";
+            compressToolStripMenuItem.Size = new Size(108, 28);
+            compressToolStripMenuItem.Text = "compress";
             // 
             // SettingsToolStripMenuItem
             // 
             SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
-            SettingsToolStripMenuItem.Size = new Size(62, 28);
-            SettingsToolStripMenuItem.Text = "设置";
+            SettingsToolStripMenuItem.Size = new Size(94, 28);
+            SettingsToolStripMenuItem.Text = "settings";
             // 
             // uninstallFileToolStripMenuItem
             // 
             uninstallFileToolStripMenuItem.Name = "uninstallFileToolStripMenuItem";
-            uninstallFileToolStripMenuItem.Size = new Size(182, 28);
-            uninstallFileToolStripMenuItem.Text = "移除文件(不是删除)";
+            uninstallFileToolStripMenuItem.Size = new Size(263, 28);
+            uninstallFileToolStripMenuItem.Text = "uninstall the file(not delete)";
             uninstallFileToolStripMenuItem.Click += uninstallFileToolStripMenuItem_Click;
             // 
             // mainTabControl
