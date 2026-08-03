@@ -1,0 +1,13 @@
+﻿| 格式             | 最快方案                               | 比其他库快很多吗 | 原因                       |
+| -------------- | ---------------------------------- | -------- | ------------------------ |
+| ZIP            | `System.IO.Compression`            | ✅ 明显     | 微软基于 zlib 优化，.NET 集成，开销低 |
+| 7Z             | 7-Zip SDK / LZMA SDK               | ✅ 明显     | 官方算法实现，SharpCompress差距较大 |
+| RAR            | UnRAR 官方库                          | ✅ 明显     | RAR格式专用实现                |
+| GZip           | `System.IO.Compression.GZipStream` | ✅ 明显     | 直接调用底层实现                 |
+| BZip2          | 官方 bzip2 / 高质量移植库                  | ⚠️ 中等    | 算法本身慢，库差距有限              |
+| XZ             | liblzma                            | ✅ 明显     | 官方实现优化最好                 |
+| Zstandard(zst) | Zstd官方库                            | ✅ 明显     | Facebook官方实现高度优化         |
+| LZ4            | 官方LZ4库                             | ✅ 明显     | LZ4就是追求极限速度              |
+| TAR            | 不是压缩格式                             | 取决于内部格式  | 通常配合 gzip/xz/zstd        |
+
+by chatgpt

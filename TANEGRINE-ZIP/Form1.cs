@@ -1,7 +1,6 @@
 using SharpCompress.Archives;
 using SharpCompress.Common;
 using System.ComponentModel;
-
 namespace TANEGRINE_ZIP
 {
     public partial class Form1 : Form
@@ -21,6 +20,10 @@ namespace TANEGRINE_ZIP
             SettingsToolStripMenuItem.Text = LanguageManager.Get("settingsText");
             uninstallFileToolStripMenuItem.Text = LanguageManager.Get("uninstallFileText");
             mainTab.Text = LanguageManager.Get("mainTabText");
+            extractDirectlyALLToolStripMenuItem.Text=LanguageManager.Get("extractDirectlyALLText");
+            extractToFolderALLToolStripMenuItem.Text = LanguageManager.Get("extractToFolderALLText");
+            extractDirectlySELECTEDToolStripMenuItem.Text = LanguageManager.Get("extractDirectlySELECTEDText");
+            extractToAFolderSELECTEDToolStripMenuItem.Text = LanguageManager.Get("extractToAFolderSELECTEDText");
         }
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -32,12 +35,13 @@ namespace TANEGRINE_ZIP
                     uninstallFileToolStripMenuItem.Visible = true;
                     statusLabel.Text = LanguageManager.Get("OpeningFile");
                     statusProgressBar.Value = 50;
-                    await LoadArchiveAsync(zippath);                    
+                    await LoadArchiveAsync(zippath);
                 }
-                else {
+                else
+                {
                     MessageBox.Show(LanguageManager.Get("NotACompressedFile"));
                     return;
-                 }
+                }
             }
             else
             {
@@ -64,14 +68,29 @@ namespace TANEGRINE_ZIP
                         fileBox.Items.Add(text);
                     });
                 }
-                Invoke(() => {
+                Invoke(() =>
+                {
                     statusLabel.Text = LanguageManager.Get("readytext");
-                    statusProgressBar.Value = 100; });
+                    statusProgressBar.Value = 100;
+                });
             });
         }
         private void uninstallFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            statusProgressBar.Value = 50;
+            statusLabel.Text = LanguageManager.Get("UninstallingText");
+            zippath = string.Empty;
+            statusLabel.Text = LanguageManager.Get("readytext");
+            statusProgressBar.Value = 0;
+            fileBox.Items.Clear();
+            uninstallFileToolStripMenuItem.Visible = false;
+        }
+        private void extractToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (fileBox.Items.Count == 0 || zippath == string.Empty)
+            {
+                MessageBox.Show(LanguageManager.Get("NoOpenedFile"));
+            }
         }
     }
 }

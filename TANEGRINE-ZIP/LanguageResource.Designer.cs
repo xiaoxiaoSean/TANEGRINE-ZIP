@@ -70,6 +70,24 @@ namespace TANEGRINE_ZIP {
         }
         
         /// <summary>
+        ///   查找类似 直接解压全部 的本地化字符串。
+        /// </summary>
+        internal static string extractDirectlyALLText {
+            get {
+                return ResourceManager.GetString("extractDirectlyALLText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 直接解压选中的 的本地化字符串。
+        /// </summary>
+        internal static string extractDirectlySELECTEDText {
+            get {
+                return ResourceManager.GetString("extractDirectlySELECTEDText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 解压 的本地化字符串。
         /// </summary>
         internal static string extractText {
@@ -79,11 +97,38 @@ namespace TANEGRINE_ZIP {
         }
         
         /// <summary>
+        ///   查找类似 解压选中的到文件夹 的本地化字符串。
+        /// </summary>
+        internal static string extractToAFolderSELECTEDText {
+            get {
+                return ResourceManager.GetString("extractToAFolderSELECTEDText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 解压全部到文件夹 的本地化字符串。
+        /// </summary>
+        internal static string extractToFolderALLText {
+            get {
+                return ResourceManager.GetString("extractToFolderALLText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 主页 的本地化字符串。
         /// </summary>
         internal static string mainTabText {
             get {
                 return ResourceManager.GetString("mainTabText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 还没有打开文件 的本地化字符串。
+        /// </summary>
+        internal static string NoOpenedFile {
+            get {
+                return ResourceManager.GetString("NoOpenedFile", resourceCulture);
             }
         }
         
@@ -138,6 +183,15 @@ namespace TANEGRINE_ZIP {
         internal static string uninstallFileText {
             get {
                 return ResourceManager.GetString("uninstallFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 正在卸载文件 的本地化字符串。
+        /// </summary>
+        internal static string UninstallingText {
+            get {
+                return ResourceManager.GetString("UninstallingText", resourceCulture);
             }
         }
     }

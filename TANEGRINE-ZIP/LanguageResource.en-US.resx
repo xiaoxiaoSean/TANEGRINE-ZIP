@@ -120,11 +120,26 @@
   <data name="compressText" xml:space="preserve">
     <value>compress</value>
   </data>
+  <data name="extractDirectlyALLText" xml:space="preserve">
+    <value>extract all directly</value>
+  </data>
+  <data name="extractDirectlySELECTEDText" xml:space="preserve">
+    <value>extract selected directly</value>
+  </data>
   <data name="extractText" xml:space="preserve">
     <value>extract</value>
   </data>
+  <data name="extractToAFolderSELECTEDText" xml:space="preserve">
+    <value>extract selected to a folder</value>
+  </data>
+  <data name="extractToFolderALLText" xml:space="preserve">
+    <value>extract all to a folder</value>
+  </data>
   <data name="mainTabText" xml:space="preserve">
     <value>home</value>
+  </data>
+  <data name="NoOpenedFile" xml:space="preserve">
+    <value>haven't open a file yet</value>
   </data>
   <data name="NotACompressedFile" xml:space="preserve">
     <value>Not a compressed file</value>
@@ -143,5 +158,8 @@
   </data>
   <data name="uninstallFileText" xml:space="preserve">
     <value>uninstall the file(not delete)</value>
+  </data>
+  <data name="UninstallingText" xml:space="preserve">
+    <value>uninstalling the file...</value>
   </data>
 </root>

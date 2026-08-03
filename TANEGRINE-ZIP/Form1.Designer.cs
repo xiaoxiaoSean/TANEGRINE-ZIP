@@ -43,6 +43,12 @@
             statusProgressBar = new ToolStripProgressBar();
             statusLabel = new ToolStripStatusLabel();
             mainOpenFileDialog = new OpenFileDialog();
+            extractDirectlyALLToolStripMenuItem = new ToolStripMenuItem();
+            extractToFolderALLToolStripMenuItem = new ToolStripMenuItem();
+            extractDirectlySELECTEDToolStripMenuItem = new ToolStripMenuItem();
+            extractToAFolderSELECTEDToolStripMenuItem = new ToolStripMenuItem();
+            compressALLToolStripMenuItem = new ToolStripMenuItem();
+            compressSELECTEDToolStripMenuItem = new ToolStripMenuItem();
             mainMenu.SuspendLayout();
             mainTabControl.SuspendLayout();
             mainTab.SuspendLayout();
@@ -55,7 +61,7 @@
             mainMenu.Items.AddRange(new ToolStripItem[] { TZIPToolStripMenuItem, OpenToolStripMenuItem, extractToolStripMenuItem, compressToolStripMenuItem, SettingsToolStripMenuItem, uninstallFileToolStripMenuItem });
             mainMenu.Location = new Point(0, 0);
             mainMenu.Name = "mainMenu";
-            mainMenu.Size = new Size(1374, 32);
+            mainMenu.Size = new Size(1199, 32);
             mainMenu.TabIndex = 1;
             // 
             // TZIPToolStripMenuItem
@@ -73,12 +79,15 @@
             // 
             // extractToolStripMenuItem
             // 
+            extractToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { extractDirectlyALLToolStripMenuItem, extractToFolderALLToolStripMenuItem, extractDirectlySELECTEDToolStripMenuItem, extractToAFolderSELECTEDToolStripMenuItem });
             extractToolStripMenuItem.Name = "extractToolStripMenuItem";
             extractToolStripMenuItem.Size = new Size(85, 28);
             extractToolStripMenuItem.Text = "extract";
+            extractToolStripMenuItem.Click += extractToolStripMenuItem_Click;
             // 
             // compressToolStripMenuItem
             // 
+            compressToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { compressALLToolStripMenuItem, compressSELECTEDToolStripMenuItem });
             compressToolStripMenuItem.Name = "compressToolStripMenuItem";
             compressToolStripMenuItem.Size = new Size(108, 28);
             compressToolStripMenuItem.Text = "compress";
@@ -103,7 +112,7 @@
             mainTabControl.Location = new Point(0, 32);
             mainTabControl.Name = "mainTabControl";
             mainTabControl.SelectedIndex = 0;
-            mainTabControl.Size = new Size(1374, 544);
+            mainTabControl.Size = new Size(1199, 689);
             mainTabControl.TabIndex = 0;
             // 
             // mainTab
@@ -111,7 +120,7 @@
             mainTab.Controls.Add(fileBox);
             mainTab.Location = new Point(4, 33);
             mainTab.Name = "mainTab";
-            mainTab.Size = new Size(1366, 507);
+            mainTab.Size = new Size(1191, 652);
             mainTab.TabIndex = 0;
             mainTab.UseVisualStyleBackColor = true;
             // 
@@ -121,16 +130,16 @@
             fileBox.FormattingEnabled = true;
             fileBox.Location = new Point(0, 0);
             fileBox.Name = "fileBox";
-            fileBox.Size = new Size(1366, 507);
+            fileBox.Size = new Size(1191, 652);
             fileBox.TabIndex = 1;
             // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(24, 24);
             statusStrip1.Items.AddRange(new ToolStripItem[] { statusProgressBar, statusLabel });
-            statusStrip1.Location = new Point(0, 545);
+            statusStrip1.Location = new Point(0, 690);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(1374, 31);
+            statusStrip1.Size = new Size(1199, 31);
             statusStrip1.TabIndex = 0;
             // 
             // statusProgressBar
@@ -148,11 +157,47 @@
             // 
             mainOpenFileDialog.FileName = "openFileDialog1";
             // 
+            // extractDirectlyALLToolStripMenuItem
+            // 
+            extractDirectlyALLToolStripMenuItem.Name = "extractDirectlyALLToolStripMenuItem";
+            extractDirectlyALLToolStripMenuItem.Size = new Size(346, 34);
+            extractDirectlyALLToolStripMenuItem.Text = "extract directly(all)";
+            // 
+            // extractToFolderALLToolStripMenuItem
+            // 
+            extractToFolderALLToolStripMenuItem.Name = "extractToFolderALLToolStripMenuItem";
+            extractToFolderALLToolStripMenuItem.Size = new Size(346, 34);
+            extractToFolderALLToolStripMenuItem.Text = "extract to a folder(all)";
+            // 
+            // extractDirectlySELECTEDToolStripMenuItem
+            // 
+            extractDirectlySELECTEDToolStripMenuItem.Name = "extractDirectlySELECTEDToolStripMenuItem";
+            extractDirectlySELECTEDToolStripMenuItem.Size = new Size(346, 34);
+            extractDirectlySELECTEDToolStripMenuItem.Text = "extract directly(selected)";
+            // 
+            // extractToAFolderSELECTEDToolStripMenuItem
+            // 
+            extractToAFolderSELECTEDToolStripMenuItem.Name = "extractToAFolderSELECTEDToolStripMenuItem";
+            extractToAFolderSELECTEDToolStripMenuItem.Size = new Size(346, 34);
+            extractToAFolderSELECTEDToolStripMenuItem.Text = "extract to a folder(selected)";
+            // 
+            // compressALLToolStripMenuItem
+            // 
+            compressALLToolStripMenuItem.Name = "compressALLToolStripMenuItem";
+            compressALLToolStripMenuItem.Size = new Size(223, 34);
+            compressALLToolStripMenuItem.Text = "all";
+            // 
+            // compressSELECTEDToolStripMenuItem
+            // 
+            compressSELECTEDToolStripMenuItem.Name = "compressSELECTEDToolStripMenuItem";
+            compressSELECTEDToolStripMenuItem.Size = new Size(223, 34);
+            compressSELECTEDToolStripMenuItem.Text = "selected only";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1374, 576);
+            ClientSize = new Size(1199, 721);
             Controls.Add(statusStrip1);
             Controls.Add(mainTabControl);
             Controls.Add(mainMenu);
@@ -177,7 +222,6 @@
         private ToolStripMenuItem extractToolStripMenuItem;
         private ToolStripMenuItem compressToolStripMenuItem;
         private ToolStripMenuItem SettingsToolStripMenuItem;
-        private ToolStripMenuItem toolStripMenuItem1;
         private TabControl mainTabControl;
         private TabPage mainTab;
         private ListBox fileBox;
@@ -187,5 +231,11 @@
         private ToolStripProgressBar statusProgressBar;
         private ToolStripStatusLabel statusLabel;
         private ToolStripMenuItem uninstallFileToolStripMenuItem;
+        private ToolStripMenuItem extractDirectlyALLToolStripMenuItem;
+        private ToolStripMenuItem extractToFolderALLToolStripMenuItem;
+        private ToolStripMenuItem extractDirectlySELECTEDToolStripMenuItem;
+        private ToolStripMenuItem extractToAFolderSELECTEDToolStripMenuItem;
+        private ToolStripMenuItem compressALLToolStripMenuItem;
+        private ToolStripMenuItem compressSELECTEDToolStripMenuItem;
     }
 }
