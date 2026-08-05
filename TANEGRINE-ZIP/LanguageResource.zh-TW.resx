@@ -117,104 +117,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AlreadyDoingJob" xml:space="preserve">
-    <value>正在执行任务，请等待任务完成</value>
-    <comment>Need review</comment>
-  </data>
   <data name="CompressFile" xml:space="preserve">
-    <value>压缩文件</value>
-    <comment>Need review</comment>
+    <value>compress file</value>
+    <comment>New</comment>
   </data>
   <data name="compressText" xml:space="preserve">
-    <value>压缩</value>
-    <comment>Need review</comment>
+    <value>compress</value>
+    <comment>New</comment>
   </data>
   <data name="ErrorTitle" xml:space="preserve">
-    <value>发生了一个错误</value>
-    <comment>Need review</comment>
+    <value>an error occurred</value>
+    <comment>New</comment>
   </data>
   <data name="extractDirectlyALLText" xml:space="preserve">
-    <value>直接解压全部</value>
-    <comment>Need review</comment>
+    <value>extract all directly</value>
+    <comment>New</comment>
   </data>
   <data name="extractDirectlySELECTEDText" xml:space="preserve">
-    <value>直接解压选中的</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="ExtractFailedText" xml:space="preserve">
-    <value>解压错误</value>
-    <comment>Need review</comment>
+    <value>extract selected directly</value>
+    <comment>New</comment>
   </data>
   <data name="ExtractingText" xml:space="preserve">
-    <value>正在解压</value>
-    <comment>Need review</comment>
+    <value>Extracting</value>
+    <comment>New</comment>
   </data>
   <data name="extractText" xml:space="preserve">
-    <value>解压</value>
-    <comment>Need review</comment>
+    <value>extract</value>
+    <comment>New</comment>
   </data>
   <data name="extractToAFolderSELECTEDText" xml:space="preserve">
-    <value>解压选中的到文件夹</value>
-    <comment>Need review</comment>
+    <value>extract selected to a folder</value>
+    <comment>New</comment>
   </data>
   <data name="extractToFolderALLText" xml:space="preserve">
-    <value>全部解压到文件夹</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="ImageFile" xml:space="preserve">
-    <value>镜像文件</value>
-    <comment>Need review</comment>
+    <value>extract all to a folder</value>
+    <comment>New</comment>
   </data>
   <data name="mainTabText" xml:space="preserve">
-    <value>主页</value>
-    <comment>Need review</comment>
+    <value>home</value>
+    <comment>New</comment>
   </data>
   <data name="NoOpenedFile" xml:space="preserve">
-    <value>还没有打开文件</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="NotACompressedFile" xml:space="preserve">
-    <value>不是一个压缩文件</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="OpeningFile" xml:space="preserve">
-    <value>正在打开文件...</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="openText" xml:space="preserve">
-    <value>开放</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="readytext" xml:space="preserve">
-    <value>已经</value>
-    <comment>Need review</comment>
+    <value>haven't open a file yet</value>
+    <comment>New</comment>
   </data>
   <data name="SelectExtractFolderText" xml:space="preserve">
-    <value>解压到</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="settingsText" xml:space="preserve">
-    <value>设置</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="uninstallFileText" xml:space="preserve">
-    <value>卸载文件(不是删除)</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="UninstallingText" xml:space="preserve">
-    <value>正在卸载文件</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="UnknowFile" xml:space="preserve">
-    <value>未知文件</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="UnknownFileTypeE1" xml:space="preserve">
-    <value>加载的文件不受支持(E1)</value>
-    <comment>Need review</comment>
-  </data>
-  <data name="UnknownFileType" xml:space="preserve">
-    <value>加载的文件不受支持</value>
-    <comment>Need review</comment>
+    <value>extract to</value>
+    <comment>New</comment>
   </data>
 </root>
