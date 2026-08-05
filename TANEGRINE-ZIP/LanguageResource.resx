@@ -117,49 +117,79 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AlreadyDoingJob" xml:space="preserve">
+    <value>TZIP is still doing some job,please wait untill the task completed</value>
+  </data>
+  <data name="CompressFile" xml:space="preserve">
+    <value>compress file</value>
+  </data>
   <data name="compressText" xml:space="preserve">
-    <value>压缩</value>
+    <value>compress</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>an error occurred</value>
   </data>
   <data name="extractDirectlyALLText" xml:space="preserve">
-    <value>直接解压全部</value>
+    <value>extract all directly</value>
   </data>
   <data name="extractDirectlySELECTEDText" xml:space="preserve">
-    <value>直接解压选中的</value>
+    <value>extract selected directly</value>
+  </data>
+  <data name="ExtractFailedText" xml:space="preserve">
+    <value>TZIP extracting failed</value>
+  </data>
+  <data name="ExtractingText" xml:space="preserve">
+    <value>Extracting</value>
   </data>
   <data name="extractText" xml:space="preserve">
-    <value>解压</value>
+    <value>extract</value>
   </data>
   <data name="extractToAFolderSELECTEDText" xml:space="preserve">
-    <value>解压选中的到文件夹</value>
+    <value>extract selected to a folder</value>
   </data>
   <data name="extractToFolderALLText" xml:space="preserve">
-    <value>解压全部到文件夹</value>
+    <value>extract all to a folder</value>
+  </data>
+  <data name="ImageFile" xml:space="preserve">
+    <value>image file</value>
   </data>
   <data name="mainTabText" xml:space="preserve">
-    <value>主页</value>
+    <value>home</value>
   </data>
   <data name="NoOpenedFile" xml:space="preserve">
-    <value>还没有打开文件</value>
+    <value>haven't open a file yet</value>
   </data>
   <data name="NotACompressedFile" xml:space="preserve">
-    <value>不是一个压缩文件</value>
+    <value>Not a compressed file</value>
   </data>
   <data name="OpeningFile" xml:space="preserve">
-    <value>正在打开文件...</value>
+    <value>Opening the file...</value>
   </data>
   <data name="openText" xml:space="preserve">
-    <value>打开</value>
+    <value>Open</value>
   </data>
   <data name="readytext" xml:space="preserve">
-    <value>就绪</value>
+    <value>ready</value>
+  </data>
+  <data name="SelectExtractFolderText" xml:space="preserve">
+    <value>extract to</value>
   </data>
   <data name="settingsText" xml:space="preserve">
-    <value>设置</value>
+    <value>settings</value>
   </data>
   <data name="uninstallFileText" xml:space="preserve">
-    <value>卸载文件(不是删除)</value>
+    <value>uninstall the file(not delete)</value>
   </data>
   <data name="UninstallingText" xml:space="preserve">
-    <value>正在卸载文件</value>
+    <value>uninstalling the file...</value>
+  </data>
+  <data name="UnknowFile" xml:space="preserve">
+    <value>Unknow File</value>
+  </data>
+  <data name="UnknownFileTypeE1" xml:space="preserve">
+    <value>The type of loaded file is unsupported(E1)</value>
+  </data>
+  <data name="UnknownFileType" xml:space="preserve">
+    <value>The type of loaded file is unsupported</value>
   </data>
 </root>

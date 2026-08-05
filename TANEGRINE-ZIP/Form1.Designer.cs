@@ -33,7 +33,13 @@
             TZIPToolStripMenuItem = new ToolStripMenuItem();
             OpenToolStripMenuItem = new ToolStripMenuItem();
             extractToolStripMenuItem = new ToolStripMenuItem();
+            extractDirectlyALLToolStripMenuItem = new ToolStripMenuItem();
+            extractToFolderALLToolStripMenuItem = new ToolStripMenuItem();
+            extractDirectlySELECTEDToolStripMenuItem = new ToolStripMenuItem();
+            extractToAFolderSELECTEDToolStripMenuItem = new ToolStripMenuItem();
             compressToolStripMenuItem = new ToolStripMenuItem();
+            compressALLToolStripMenuItem = new ToolStripMenuItem();
+            compressSELECTEDToolStripMenuItem = new ToolStripMenuItem();
             SettingsToolStripMenuItem = new ToolStripMenuItem();
             uninstallFileToolStripMenuItem = new ToolStripMenuItem();
             mainTabControl = new TabControl();
@@ -43,12 +49,8 @@
             statusProgressBar = new ToolStripProgressBar();
             statusLabel = new ToolStripStatusLabel();
             mainOpenFileDialog = new OpenFileDialog();
-            extractDirectlyALLToolStripMenuItem = new ToolStripMenuItem();
-            extractToFolderALLToolStripMenuItem = new ToolStripMenuItem();
-            extractDirectlySELECTEDToolStripMenuItem = new ToolStripMenuItem();
-            extractToAFolderSELECTEDToolStripMenuItem = new ToolStripMenuItem();
-            compressALLToolStripMenuItem = new ToolStripMenuItem();
-            compressSELECTEDToolStripMenuItem = new ToolStripMenuItem();
+            mainSaveFileDialog = new SaveFileDialog();
+            mainFolderBrowserDialog = new FolderBrowserDialog();
             mainMenu.SuspendLayout();
             mainTabControl.SuspendLayout();
             mainTab.SuspendLayout();
@@ -85,12 +87,52 @@
             extractToolStripMenuItem.Text = "extract";
             extractToolStripMenuItem.Click += extractToolStripMenuItem_Click;
             // 
+            // extractDirectlyALLToolStripMenuItem
+            // 
+            extractDirectlyALLToolStripMenuItem.Name = "extractDirectlyALLToolStripMenuItem";
+            extractDirectlyALLToolStripMenuItem.Size = new Size(346, 34);
+            extractDirectlyALLToolStripMenuItem.Text = "extract directly(all)";
+            extractDirectlyALLToolStripMenuItem.Click += extractDirectlyALLToolStripMenuItem_Click;
+            // 
+            // extractToFolderALLToolStripMenuItem
+            // 
+            extractToFolderALLToolStripMenuItem.Name = "extractToFolderALLToolStripMenuItem";
+            extractToFolderALLToolStripMenuItem.Size = new Size(346, 34);
+            extractToFolderALLToolStripMenuItem.Text = "extract to a folder(all)";
+            extractToFolderALLToolStripMenuItem.Click += extractToFolderALLToolStripMenuItem_Click;
+            // 
+            // extractDirectlySELECTEDToolStripMenuItem
+            // 
+            extractDirectlySELECTEDToolStripMenuItem.Name = "extractDirectlySELECTEDToolStripMenuItem";
+            extractDirectlySELECTEDToolStripMenuItem.Size = new Size(346, 34);
+            extractDirectlySELECTEDToolStripMenuItem.Text = "extract directly(selected)";
+            extractDirectlySELECTEDToolStripMenuItem.Click += extractDirectlySELECTEDToolStripMenuItem_Click;
+            // 
+            // extractToAFolderSELECTEDToolStripMenuItem
+            // 
+            extractToAFolderSELECTEDToolStripMenuItem.Name = "extractToAFolderSELECTEDToolStripMenuItem";
+            extractToAFolderSELECTEDToolStripMenuItem.Size = new Size(346, 34);
+            extractToAFolderSELECTEDToolStripMenuItem.Text = "extract to a folder(selected)";
+            extractToAFolderSELECTEDToolStripMenuItem.Click += extractToAFolderSELECTEDToolStripMenuItem_Click;
+            // 
             // compressToolStripMenuItem
             // 
             compressToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { compressALLToolStripMenuItem, compressSELECTEDToolStripMenuItem });
             compressToolStripMenuItem.Name = "compressToolStripMenuItem";
             compressToolStripMenuItem.Size = new Size(108, 28);
             compressToolStripMenuItem.Text = "compress";
+            // 
+            // compressALLToolStripMenuItem
+            // 
+            compressALLToolStripMenuItem.Name = "compressALLToolStripMenuItem";
+            compressALLToolStripMenuItem.Size = new Size(223, 34);
+            compressALLToolStripMenuItem.Text = "all";
+            // 
+            // compressSELECTEDToolStripMenuItem
+            // 
+            compressSELECTEDToolStripMenuItem.Name = "compressSELECTEDToolStripMenuItem";
+            compressSELECTEDToolStripMenuItem.Size = new Size(223, 34);
+            compressSELECTEDToolStripMenuItem.Text = "selected only";
             // 
             // SettingsToolStripMenuItem
             // 
@@ -150,48 +192,12 @@
             // statusLabel
             // 
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(118, 24);
-            statusLabel.Text = "软件正在准备";
+            statusLabel.Size = new Size(137, 24);
+            statusLabel.Text = "TZIP is starting";
             // 
             // mainOpenFileDialog
             // 
             mainOpenFileDialog.FileName = "openFileDialog1";
-            // 
-            // extractDirectlyALLToolStripMenuItem
-            // 
-            extractDirectlyALLToolStripMenuItem.Name = "extractDirectlyALLToolStripMenuItem";
-            extractDirectlyALLToolStripMenuItem.Size = new Size(346, 34);
-            extractDirectlyALLToolStripMenuItem.Text = "extract directly(all)";
-            // 
-            // extractToFolderALLToolStripMenuItem
-            // 
-            extractToFolderALLToolStripMenuItem.Name = "extractToFolderALLToolStripMenuItem";
-            extractToFolderALLToolStripMenuItem.Size = new Size(346, 34);
-            extractToFolderALLToolStripMenuItem.Text = "extract to a folder(all)";
-            // 
-            // extractDirectlySELECTEDToolStripMenuItem
-            // 
-            extractDirectlySELECTEDToolStripMenuItem.Name = "extractDirectlySELECTEDToolStripMenuItem";
-            extractDirectlySELECTEDToolStripMenuItem.Size = new Size(346, 34);
-            extractDirectlySELECTEDToolStripMenuItem.Text = "extract directly(selected)";
-            // 
-            // extractToAFolderSELECTEDToolStripMenuItem
-            // 
-            extractToAFolderSELECTEDToolStripMenuItem.Name = "extractToAFolderSELECTEDToolStripMenuItem";
-            extractToAFolderSELECTEDToolStripMenuItem.Size = new Size(346, 34);
-            extractToAFolderSELECTEDToolStripMenuItem.Text = "extract to a folder(selected)";
-            // 
-            // compressALLToolStripMenuItem
-            // 
-            compressALLToolStripMenuItem.Name = "compressALLToolStripMenuItem";
-            compressALLToolStripMenuItem.Size = new Size(223, 34);
-            compressALLToolStripMenuItem.Text = "all";
-            // 
-            // compressSELECTEDToolStripMenuItem
-            // 
-            compressSELECTEDToolStripMenuItem.Name = "compressSELECTEDToolStripMenuItem";
-            compressSELECTEDToolStripMenuItem.Size = new Size(223, 34);
-            compressSELECTEDToolStripMenuItem.Text = "selected only";
             // 
             // Form1
             // 
@@ -237,5 +243,7 @@
         private ToolStripMenuItem extractToAFolderSELECTEDToolStripMenuItem;
         private ToolStripMenuItem compressALLToolStripMenuItem;
         private ToolStripMenuItem compressSELECTEDToolStripMenuItem;
+        private SaveFileDialog mainSaveFileDialog;
+        private FolderBrowserDialog mainFolderBrowserDialog;
     }
 }
