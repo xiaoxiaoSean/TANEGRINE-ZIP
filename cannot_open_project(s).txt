@@ -1,0 +1,1 @@
+install Visual Studio Installer Projects extension
