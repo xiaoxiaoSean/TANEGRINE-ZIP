@@ -3,5 +3,4 @@
     <File Path="cannot_open_project(s).txt" />
   </Folder>
   <Project Path="TANEGRINE-ZIP/TANEGRINE-ZIP.csproj" />
-  <Project Path="TANGERINE-ZIP-Installer/TANGERINE-ZIP-Installer.vdproj" Type="Installer" />
 </Solution>
