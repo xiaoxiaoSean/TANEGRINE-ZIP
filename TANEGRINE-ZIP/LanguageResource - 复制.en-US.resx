@@ -117,79 +117,79 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-	<data name="AlreadyDoingJob" xml:space="preserve">
-    <value>TZIP 仍在執行工作，請等待工作完成</value>
-  </data>
-	<data name="CompressFile" xml:space="preserve">
-    <value>壓縮檔案</value>
-  </data>
-	<data name="compressText" xml:space="preserve">
-    <value>壓縮</value>
-  </data>
-	<data name="ErrorTitle" xml:space="preserve">
-    <value>發生錯誤</value>
-  </data>
-	<data name="extractDirectlyALLText" xml:space="preserve">
-    <value>直接解壓縮全部</value>
-  </data>
-	<data name="extractDirectlySELECTEDText" xml:space="preserve">
-    <value>直接解壓縮選取項目</value>
-  </data>
-	<data name="ExtractFailedText" xml:space="preserve">
-    <value>TZIP 解壓縮失敗</value>
-  </data>
-	<data name="ExtractingText" xml:space="preserve">
-    <value>正在解壓縮</value>
-  </data>
-	<data name="extractText" xml:space="preserve">
-    <value>解壓縮</value>
-  </data>
-	<data name="extractToAFolderSELECTEDText" xml:space="preserve">
-    <value>將選取項目解壓縮至資料夾</value>
-  </data>
-	<data name="extractToFolderALLText" xml:space="preserve">
-    <value>將全部檔案解壓縮至資料夾</value>
-  </data>
-	<data name="ImageFile" xml:space="preserve">
-    <value>映像檔</value>
-  </data>
-	<data name="mainTabText" xml:space="preserve">
-    <value>首頁</value>
-  </data>
-	<data name="NoOpenedFile" xml:space="preserve">
-    <value>尚未開啟檔案</value>
-  </data>
-	<data name="NotACompressedFile" xml:space="preserve">
-    <value>不是壓縮檔</value>
-  </data>
-	<data name="OpeningFile" xml:space="preserve">
-    <value>正在開啟檔案...</value>
-  </data>
-	<data name="openText" xml:space="preserve">
-    <value>開啟</value>
-  </data>
-	<data name="readytext" xml:space="preserve">
-    <value>就緒</value>
-  </data>
-	<data name="SelectExtractFolderText" xml:space="preserve">
-    <value>選擇解壓縮位置</value>
-  </data>
-	<data name="settingsText" xml:space="preserve">
-    <value>設定</value>
-  </data>
-	<data name="uninstallFileText" xml:space="preserve">
-    <value>移除檔案（不會刪除）</value>
-  </data>
-	<data name="UninstallingText" xml:space="preserve">
-    <value>正在移除檔案...</value>
-  </data>
-	<data name="UnknowFile" xml:space="preserve">
-    <value>未知檔案</value>
-  </data>
-	<data name="UnknownFileTypeE1" xml:space="preserve">
-    <value>不支援的檔案格式（E1）</value>
-  </data>
-	<data name="UnknownFileType" xml:space="preserve">
-    <value>不支援的檔案格式</value>
-  </data>
+  <data name="AlreadyDoingJob" xml:space="preserve">
+    <value>TZIP is still doing some job,please wait untill the task completed</value>
+  <comment>Need review</comment></data>
+  <data name="CompressFile" xml:space="preserve">
+    <value>compress file</value>
+  <comment>Need review</comment></data>
+  <data name="compressText" xml:space="preserve">
+    <value>compress</value>
+  <comment>Need review</comment></data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>an error occurred</value>
+  <comment>Need review</comment></data>
+  <data name="extractDirectlyALLText" xml:space="preserve">
+    <value>extract all directly</value>
+  <comment>Need review</comment></data>
+  <data name="extractDirectlySELECTEDText" xml:space="preserve">
+    <value>extract selected directly</value>
+  <comment>Need review</comment></data>
+  <data name="ExtractFailedText" xml:space="preserve">
+    <value>TZIP extracting failed</value>
+  <comment>Need review</comment></data>
+  <data name="ExtractingText" xml:space="preserve">
+    <value>Extracting</value>
+  <comment>Need review</comment></data>
+  <data name="extractText" xml:space="preserve">
+    <value>extract</value>
+  <comment>Need review</comment></data>
+  <data name="extractToAFolderSELECTEDText" xml:space="preserve">
+    <value>extract selected to a folder</value>
+  <comment>Need review</comment></data>
+  <data name="extractToFolderALLText" xml:space="preserve">
+    <value>extract all to a folder</value>
+  <comment>Need review</comment></data>
+  <data name="ImageFile" xml:space="preserve">
+    <value>image file</value>
+  <comment>Need review</comment></data>
+  <data name="mainTabText" xml:space="preserve">
+    <value>home</value>
+  <comment>Need review</comment></data>
+  <data name="NoOpenedFile" xml:space="preserve">
+    <value>haven't open a file yet</value>
+  <comment>Need review</comment></data>
+  <data name="NotACompressedFile" xml:space="preserve">
+    <value>Not a compressed file</value>
+  <comment>Need review</comment></data>
+  <data name="OpeningFile" xml:space="preserve">
+    <value>Opening the file...</value>
+  <comment>Need review</comment></data>
+  <data name="openText" xml:space="preserve">
+    <value>Open</value>
+  <comment>Need review</comment></data>
+  <data name="readytext" xml:space="preserve">
+    <value>ready</value>
+  <comment>Need review</comment></data>
+  <data name="SelectExtractFolderText" xml:space="preserve">
+    <value>extract to</value>
+  <comment>Need review</comment></data>
+  <data name="settingsText" xml:space="preserve">
+    <value>settings</value>
+  <comment>Need review</comment></data>
+  <data name="uninstallFileText" xml:space="preserve">
+    <value>uninstall the file(not delete)</value>
+  <comment>Need review</comment></data>
+  <data name="UninstallingText" xml:space="preserve">
+    <value>uninstalling the file...</value>
+  <comment>Need review</comment></data>
+  <data name="UnknowFile" xml:space="preserve">
+    <value>Unknow file</value>
+  <comment>Need review</comment></data>
+  <data name="UnknownFileTypeE1" xml:space="preserve">
+    <value>The type of loaded file is unsupported(E1)</value>
+  <comment>Need review</comment></data>
+  <data name="UnknownFileType" xml:space="preserve">
+    <value>The type of loaded file is unsupported</value>
+  <comment>Need review</comment></data>
 </root>
