@@ -192,4 +192,13 @@
   <data name="UnknownFileType" xml:space="preserve">
     <value>The type of loaded file is unsupported</value>
   </data>
+  <data name="Unavailble1" xml:space="preserve">
+    <value>This option is unavailable now,may be available in the future</value>
+  </data>
+  <data name="ExtractingCompleted" xml:space="preserve">
+    <value>Extracting completed</value>
+  </data>
+  <data name="ERRnsufficientMemory" xml:space="preserve">
+    <value>Insufficient Memory</value>
+  </data>
 </root>

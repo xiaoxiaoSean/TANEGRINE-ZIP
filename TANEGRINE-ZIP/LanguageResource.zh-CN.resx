@@ -139,7 +139,7 @@
     <value>解压错误</value>
   </data>
   <data name="ExtractingText" xml:space="preserve">
-    <value>正在解压</value>
+    <value>正在解压..</value>
   </data>
   <data name="extractText" xml:space="preserve">
     <value>解压</value>
@@ -181,7 +181,7 @@
     <value>卸载文件(不是删除)</value>
   </data>
   <data name="UninstallingText" xml:space="preserve">
-    <value>正在卸载文件</value>
+    <value>正在卸载文件...</value>
   </data>
   <data name="UnknowFile" xml:space="preserve">
     <value>未知文件</value>
@@ -191,5 +191,14 @@
   </data>
   <data name="UnknownFileType" xml:space="preserve">
     <value>加载的文件不受支持</value>
+  </data>
+  <data name="Unavailble1" xml:space="preserve">
+    <value>这个选项暂不可用，也许未来会可用</value>
+  </data>
+  <data name="ExtractingCompleted" xml:space="preserve">
+    <value>解压完成</value>
+  </data>
+  <data name="ERRnsufficientMemory" xml:space="preserve">
+    <value>内存不足</value>
   </data>
 </root>

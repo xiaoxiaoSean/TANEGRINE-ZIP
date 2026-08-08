@@ -139,6 +139,7 @@
             SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
             SettingsToolStripMenuItem.Size = new Size(94, 28);
             SettingsToolStripMenuItem.Text = "settings";
+            SettingsToolStripMenuItem.Click += SettingsToolStripMenuItem_Click;
             // 
             // uninstallFileToolStripMenuItem
             // 
