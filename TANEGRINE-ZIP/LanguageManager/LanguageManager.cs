@@ -5,7 +5,7 @@ public static class LanguageManager
 {
     private static readonly ResourceManager rm =
         new ResourceManager(
-            "TANEGRINE_ZIP.LanguageResource",
+            "TANEGRINE_ZIP.LanguageManager.LanguageResource",
             Assembly.GetExecutingAssembly());
 
     public static string Get(string key)

@@ -118,87 +118,116 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlreadyDoingJob" xml:space="preserve">
-    <value>正在执行任务，请等待任务完成</value>
+    <value>TZIP is still doing some job,please wait untill the task completed</value>
   </data>
   <data name="CompressFile" xml:space="preserve">
-    <value>压缩文件</value>
+    <value>compress file</value>
   </data>
   <data name="compressText" xml:space="preserve">
-    <value>压缩</value>
+    <value>compress</value>
   </data>
   <data name="ErrorTitle" xml:space="preserve">
-    <value>发生了一个错误</value>
+    <value>an error occurred</value>
   </data>
   <data name="extractDirectlyALLText" xml:space="preserve">
-    <value>直接解压全部</value>
+    <value>extract all directly</value>
   </data>
   <data name="extractDirectlySELECTEDText" xml:space="preserve">
-    <value>直接解压选中的</value>
+    <value>extract selected directly</value>
   </data>
   <data name="ExtractFailedText" xml:space="preserve">
-    <value>解压错误</value>
+    <value>TZIP extracting failed</value>
   </data>
   <data name="ExtractingText" xml:space="preserve">
-    <value>正在解压..</value>
+    <value>Extracting</value>
   </data>
   <data name="extractText" xml:space="preserve">
-    <value>解压</value>
+    <value>extract</value>
   </data>
   <data name="extractToAFolderSELECTEDText" xml:space="preserve">
-    <value>解压选中的到文件夹</value>
+    <value>extract selected to a folder</value>
   </data>
   <data name="extractToFolderALLText" xml:space="preserve">
-    <value>全部解压到文件夹</value>
+    <value>extract all to a folder</value>
   </data>
   <data name="ImageFile" xml:space="preserve">
-    <value>镜像文件</value>
+    <value>image file</value>
   </data>
   <data name="mainTabText" xml:space="preserve">
-    <value>主页</value>
+    <value>home</value>
   </data>
   <data name="NoOpenedFile" xml:space="preserve">
-    <value>还没有打开文件</value>
+    <value>haven't open a file yet</value>
   </data>
   <data name="NotACompressedFile" xml:space="preserve">
-    <value>不是一个压缩文件</value>
+    <value>Not a compressed file</value>
   </data>
   <data name="OpeningFile" xml:space="preserve">
-    <value>正在打开文件...</value>
+    <value>Opening the file...</value>
   </data>
   <data name="openText" xml:space="preserve">
-    <value>打开文件</value>
+    <value>Open</value>
   </data>
   <data name="readytext" xml:space="preserve">
-    <value>就绪</value>
+    <value>ready</value>
   </data>
   <data name="SelectExtractFolderText" xml:space="preserve">
-    <value>解压到</value>
+    <value>extract to</value>
   </data>
   <data name="settingsText" xml:space="preserve">
-    <value>设置</value>
+    <value>settings</value>
   </data>
   <data name="uninstallFileText" xml:space="preserve">
-    <value>卸载文件(不是删除)</value>
+    <value>uninstall the file(not delete)</value>
   </data>
   <data name="UninstallingText" xml:space="preserve">
-    <value>正在卸载文件...</value>
+    <value>uninstalling the file...</value>
   </data>
   <data name="UnknowFile" xml:space="preserve">
-    <value>未知文件</value>
+    <value>Unknow file</value>
   </data>
   <data name="UnknownFileTypeE1" xml:space="preserve">
-    <value>加载的文件不受支持(E1)</value>
+    <value>The type of loaded file is unsupported(E1)</value>
   </data>
   <data name="UnknownFileType" xml:space="preserve">
-    <value>加载的文件不受支持</value>
+    <value>The type of loaded file is unsupported</value>
   </data>
   <data name="Unavailble1" xml:space="preserve">
-    <value>这个选项暂不可用，也许未来会可用</value>
+    <value>This option is unavailable now,may be available in the future</value>
   </data>
   <data name="ExtractingCompleted" xml:space="preserve">
-    <value>解压完成</value>
+    <value>Extracting completed</value>
   </data>
   <data name="ERRnsufficientMemory" xml:space="preserve">
-    <value>内存不足</value>
+    <value>Insufficient Memory</value>
+  </data>
+  <data name="ExtractingFailedNotFound" xml:space="preserve">
+    <value>Extracting failed.because the file u selected does not existed</value>
+  </data>
+  <data name="OverWriteOrNot" xml:space="preserve">
+    <value>wanna overwrite?</value>
+  </data>
+  <data name="OverWriteText" xml:space="preserve">
+    <value>A file with the same name already exists at the target location. 
+Click "Yes" to overwrite this file
+"No" to skip it
+"Yes to All" to overwrite all files if this occurs during this job
+"No to All" to cancel the entire operation. 
+Warning: The original file will be deleted forever and replaced with the new extracted file if you click "Yes" or "Yes to All". This operation cannot be undone. Do it at your own risk.</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Execute</value>
+  </data>
+  <data name="OverWrite1" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="OverWrite2" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OverWrite4" xml:space="preserve">
+    <value>No to all</value>
+  </data>
+  <data name="OverWrite3" xml:space="preserve">
+    <value>Yes to all</value>
   </data>
 </root>

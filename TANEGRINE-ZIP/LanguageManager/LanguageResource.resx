@@ -201,4 +201,33 @@
   <data name="ERRnsufficientMemory" xml:space="preserve">
     <value>Insufficient Memory</value>
   </data>
+  <data name="ExtractingFailedNotFound" xml:space="preserve">
+    <value>Extracting failed.because the file u selected does not existed</value>
+  </data>
+  <data name="OverWriteOrNot" xml:space="preserve">
+    <value>wanna overwrite?</value>
+  </data>
+  <data name="OverWriteText" xml:space="preserve">
+    <value>A file with the same name already exists at the target location. 
+Click "Yes" to overwrite this file
+"No" to skip it
+"Yes to All" to overwrite all files if this occurs during this job
+"No to All" to cancel the entire operation. 
+Warning: The original file will be deleted forever and replaced with the new extracted file if you click "Yes" or "Yes to All". This operation cannot be undone. Do it at your own risk.</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>Execute</value>
+  </data>
+  <data name="OverWrite1" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="OverWrite2" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OverWrite4" xml:space="preserve">
+    <value>No to all</value>
+  </data>
+  <data name="OverWrite3" xml:space="preserve">
+    <value>Yes to all</value>
+  </data>
 </root>

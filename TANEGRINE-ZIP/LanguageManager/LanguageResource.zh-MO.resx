@@ -118,78 +118,117 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlreadyDoingJob" xml:space="preserve">
-    <value>TZIP is still doing some job,please wait untill the task completed</value>
-  <comment>Need review</comment></data>
+    <value>TZIP 仍在執行工作，請等待工作完成</value>
+  </data>
   <data name="CompressFile" xml:space="preserve">
-    <value>compress file</value>
-  <comment>Need review</comment></data>
+    <value>壓縮檔案</value>
+  </data>
   <data name="compressText" xml:space="preserve">
-    <value>compress</value>
-  <comment>Need review</comment></data>
+    <value>壓縮</value>
+  </data>
   <data name="ErrorTitle" xml:space="preserve">
-    <value>an error occurred</value>
-  <comment>Need review</comment></data>
+    <value>發生錯誤</value>
+  </data>
   <data name="extractDirectlyALLText" xml:space="preserve">
-    <value>extract all directly</value>
-  <comment>Need review</comment></data>
+    <value>直接解壓縮全部</value>
+  </data>
   <data name="extractDirectlySELECTEDText" xml:space="preserve">
-    <value>extract selected directly</value>
-  <comment>Need review</comment></data>
+    <value>直接解壓縮選取項目</value>
+  </data>
   <data name="ExtractFailedText" xml:space="preserve">
-    <value>TZIP extracting failed</value>
-  <comment>Need review</comment></data>
+    <value>TZIP 解壓縮失敗</value>
+  </data>
   <data name="ExtractingText" xml:space="preserve">
-    <value>Extracting</value>
-  <comment>Need review</comment></data>
+    <value>正在解壓縮</value>
+  </data>
   <data name="extractText" xml:space="preserve">
-    <value>extract</value>
-  <comment>Need review</comment></data>
+    <value>解壓縮</value>
+  </data>
   <data name="extractToAFolderSELECTEDText" xml:space="preserve">
-    <value>extract selected to a folder</value>
-  <comment>Need review</comment></data>
+    <value>將選取項目解壓縮至資料夾</value>
+  </data>
   <data name="extractToFolderALLText" xml:space="preserve">
-    <value>extract all to a folder</value>
-  <comment>Need review</comment></data>
+    <value>將全部檔案解壓縮至資料夾</value>
+  </data>
   <data name="ImageFile" xml:space="preserve">
-    <value>image file</value>
-  <comment>Need review</comment></data>
+    <value>映像檔</value>
+  </data>
   <data name="mainTabText" xml:space="preserve">
-    <value>home</value>
-  <comment>Need review</comment></data>
+    <value>主頁</value>
+  </data>
   <data name="NoOpenedFile" xml:space="preserve">
-    <value>haven't open a file yet</value>
-  <comment>Need review</comment></data>
+    <value>尚未開啟檔案</value>
+  </data>
   <data name="NotACompressedFile" xml:space="preserve">
-    <value>Not a compressed file</value>
-  <comment>Need review</comment></data>
+    <value>不是壓縮檔</value>
+  </data>
   <data name="OpeningFile" xml:space="preserve">
-    <value>Opening the file...</value>
-  <comment>Need review</comment></data>
+    <value>正在開啟檔案...</value>
+  </data>
   <data name="openText" xml:space="preserve">
-    <value>Open</value>
-  <comment>Need review</comment></data>
+    <value>開啟</value>
+  </data>
   <data name="readytext" xml:space="preserve">
-    <value>ready</value>
-  <comment>Need review</comment></data>
+    <value>就緒</value>
+  </data>
   <data name="SelectExtractFolderText" xml:space="preserve">
-    <value>extract to</value>
-  <comment>Need review</comment></data>
+    <value>選擇解壓縮位置</value>
+  </data>
   <data name="settingsText" xml:space="preserve">
-    <value>settings</value>
-  <comment>Need review</comment></data>
+    <value>設定</value>
+  </data>
   <data name="uninstallFileText" xml:space="preserve">
-    <value>uninstall the file(not delete)</value>
-  <comment>Need review</comment></data>
+    <value>移除檔案（不會刪除）</value>
+  </data>
   <data name="UninstallingText" xml:space="preserve">
-    <value>uninstalling the file...</value>
-  <comment>Need review</comment></data>
+    <value>正在移除檔案...</value>
+  </data>
   <data name="UnknowFile" xml:space="preserve">
-    <value>Unknow file</value>
-  <comment>Need review</comment></data>
+    <value>未知檔案</value>
+  </data>
   <data name="UnknownFileTypeE1" xml:space="preserve">
-    <value>The type of loaded file is unsupported(E1)</value>
-  <comment>Need review</comment></data>
+    <value>不支援的檔案格式（E1）</value>
+  </data>
   <data name="UnknownFileType" xml:space="preserve">
-    <value>The type of loaded file is unsupported</value>
-  <comment>Need review</comment></data>
+    <value>不支援的檔案格式</value>
+  </data>
+  <data name="Unavailble1" xml:space="preserve">
+    <value>此選項目前無法使用，未來可能會開放使用。</value>
+  </data>
+  <data name="ExtractingCompleted" xml:space="preserve">
+    <value>解壓縮完成</value>
+  </data>
+  <data name="ERRnsufficientMemory" xml:space="preserve">
+    <value>記憶體不足</value>
+  </data>
+  <data name="ExtractingFailedNotFound" xml:space="preserve">
+    <value>解壓縮失敗，因為你所選擇的檔案不存在</value>
+  </data>
+  <data name="OverWriteOrNot" xml:space="preserve">
+    <value>希望覆蓋嗎？</value>
+  </data>
+  <data name="OverWriteText" xml:space="preserve">
+    <value>在您的目標資料夾中，TZIP 偵測到相同的檔案。
+點擊「是」以覆寫此檔案。
+點擊「否」以跳過此檔案。
+「全部是」會覆寫此檔案，並且在下一次遇到相同情況時，後續檔案也會全部覆寫。
+「全部否」會結束此任務。
+
+注意：如果您選擇「是」或「全部是」，您的原始檔案將會被刪除，然後替換為對應的解壓縮檔案。此操作無法復原，所有後果將由您自行承擔。</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>執行</value>
+  </data>
+  <data name="OverWrite1" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="OverWrite2" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="OverWrite4" xml:space="preserve">
+    <value>全部否</value>
+  </data>
+  <data name="OverWrite3" xml:space="preserve">
+    <value>全部是</value>
+  </data>
 </root>

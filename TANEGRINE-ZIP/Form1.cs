@@ -2,9 +2,6 @@ using SharpCompress.Archives;
 using SharpCompress.Common;
 using System.ComponentModel;
 using System.IO.Compression;
-using UnrarNative;
-using UnrarNative.Models;
-using UnrarNative.Models.Enums;
 namespace TANEGRINE_ZIP
 {
     public partial class Form1 : Form
@@ -136,10 +133,9 @@ namespace TANEGRINE_ZIP
 
                 await Task.Run(() =>
                 {
-                    using var archiveZIP = ArchiveFactory.OpenArchive(zippath);
-                    RAROpenArchiveData RARarchiveData = new RAROpenArchiveData();
-                    RARarchiveData.ArcName = zippath;
-                    var archiveRAR =Unrar.RAROpenArchive(ref RARarchiveData);
+                    using var archiveZIP = ZipFile.OpenRead(zippath);
+                    using var archiveRAR = ArchiveFactory.OpenArchive(zippath);
+                    bool allOverWrite = false;
                     switch (fileType)
                     {
                         case FileDetector.FileType.Unknown:
@@ -148,6 +144,41 @@ namespace TANEGRINE_ZIP
 
                         case FileDetector.FileType.Zip:
                             foreach (var entry in archiveZIP.Entries)
+                            {
+                                if (string.IsNullOrEmpty(entry.Name))
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    if (selectedSet.Contains(entry.Name))
+                                    {
+                                        Directory.CreateDirectory(Path.Combine(destinationPath, entry.FullName));
+                                        if (File.Exists(Path.Combine(destinationPath, entry.FullName)))
+                                        {
+                                            if (allOverWrite)
+                                            {
+                                                goto cExtract;
+                                            }
+                                            else
+                                            {
+
+                                            }
+                                        }
+                                    cExtract:
+                                        entry.ExtractToFile(Path.Combine(destinationPath, entry.FullName), true);
+
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+
+                                }
+                            }
+                            break;
+                        case FileDetector.FileType.Rar:
+                            foreach (var entry in archiveRAR.Entries)
                             {
                                 if (entry.IsDirectory)
                                 {
@@ -166,14 +197,6 @@ namespace TANEGRINE_ZIP
                                     });
                                 }
                             }
-                            break;
-                        case FileDetector.FileType.Rar:
-                            RAROpenArchiveDataEx rarData= new RAROpenArchiveDataEx();
-                            rarData.ArcName = zippath;
-                            rarData.ArcNameW = zippath;
-
-                            rarData.OpenMode = OpenMode.Extract;
-                            var rarArchive = Unrar.RAROpenArchive(ref rarData);
                             break;
                         case FileDetector.FileType.SevenZip:
                             break;
@@ -206,10 +229,11 @@ namespace TANEGRINE_ZIP
             {
                 isDoingJob = false;
             }
-            Invoke(() => { 
+            Invoke(() =>
+            {
                 statusLabel.Text = LanguageManager.Get("ExtractingCompleted");
                 statusProgressBar.Value = 100;
-            } );
+            });
         }
         private async Task ExtractAllEntriesAsync(string zippath, string destinationPath)
         {

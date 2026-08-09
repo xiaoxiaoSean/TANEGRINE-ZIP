@@ -201,4 +201,34 @@
   <data name="ERRnsufficientMemory" xml:space="preserve">
     <value>記憶體不足</value>
   </data>
+  <data name="ExtractingFailedNotFound" xml:space="preserve">
+    <value>解壓縮失敗，因為你所選擇的檔案不存在</value>
+  </data>
+  <data name="OverWriteOrNot" xml:space="preserve">
+    <value>希望覆蓋嗎？</value>
+  </data>
+  <data name="OverWriteText" xml:space="preserve">
+    <value>在您的目標資料夾中，TZIP 偵測到相同的檔案。
+點擊「是」以覆寫此檔案。
+點擊「否」以跳過此檔案。
+「全部是」會覆寫此檔案，並且在下一次遇到相同情況時，後續檔案也會全部覆寫。
+「全部否」會結束此任務。
+
+注意：如果您選擇「是」或「全部是」，您的原始檔案將會被刪除，然後替換為對應的解壓縮檔案。此操作無法復原，所有後果將由您自行承擔。</value>
+  </data>
+  <data name="Execute" xml:space="preserve">
+    <value>執行</value>
+  </data>
+  <data name="OverWrite1" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="OverWrite2" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="OverWrite4" xml:space="preserve">
+    <value>全部否</value>
+  </data>
+  <data name="OverWrite3" xml:space="preserve">
+    <value>全部是</value>
+  </data>
 </root>
