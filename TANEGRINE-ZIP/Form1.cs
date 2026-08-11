@@ -136,10 +136,13 @@ namespace TANEGRINE_ZIP
                     using var archiveZIP = ZipFile.OpenRead(zippath);
                     using var archiveRAR = ArchiveFactory.OpenArchive(zippath);
                     bool allOverWrite = false;
+                    bool allSkip = false;
+                    bool isThisFileExtracted = false;
+                    bool stopJob = false;
                     switch (fileType)
                     {
                         case FileDetector.FileType.Unknown:
-                            MessageBox.Show(LanguageManager.Get("UnknownFileTypeE1"));
+                            MessageBox.Show(LanguageManager.Get("UnknownFileType"));
                             break;
 
                         case FileDetector.FileType.Zip:
@@ -162,18 +165,55 @@ namespace TANEGRINE_ZIP
                                             }
                                             else
                                             {
-
+                                                if ((!allOverWrite) && (!allSkip))
+                                                {
+                                                reShowOWF:
+                                                    OverWriteOrNotForm owonf = new OverWriteOrNotForm();
+                                                    owonf.ShowDialog();
+                                                    owonf.SyncBool(ref allOverWrite);
+                                                    owonf.SyncBool2(ref allSkip);
+                                                    int OWFresult = -1;
+                                                    owonf.GetResult(ref OWFresult);
+                                                    if ((!allOverWrite) && (!allSkip))
+                                                    {
+                                                        switch (OWFresult)
+                                                        {
+                                                            default:
+                                                                break;
+                                                            case -100:
+                                                                goto reShowOWF; break;
+                                                            case 1:
+                                                                goto cExtract; break;
+                                                            case 2:
+                                                                continue;
+                                                            case 1000:
+                                                                stopJob = true;
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                                if (allOverWrite)
+                                                {
+                                                    goto cExtract;
+                                                }
+                                                if (allSkip)
+                                                {
+                                                    continue;
+                                                }
+                                                if (stopJob)
+                                                {
+                                                    isDoingJob = false;
+                                                    return;
+                                                }
                                             }
                                         }
                                     cExtract:
                                         entry.ExtractToFile(Path.Combine(destinationPath, entry.FullName), true);
-
                                     }
                                     else
                                     {
                                         continue;
                                     }
-
                                 }
                             }
                             break;

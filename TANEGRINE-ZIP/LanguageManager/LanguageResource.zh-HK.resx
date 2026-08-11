@@ -186,9 +186,6 @@
   <data name="UnknowFile" xml:space="preserve">
     <value>未知檔案</value>
   </data>
-  <data name="UnknownFileTypeE1" xml:space="preserve">
-    <value>不支援的檔案格式（E1）</value>
-  </data>
   <data name="UnknownFileType" xml:space="preserve">
     <value>不支援的檔案格式</value>
   </data>
@@ -230,5 +227,16 @@
   </data>
   <data name="OverWrite3" xml:space="preserve">
     <value>全部是</value>
+  </data>
+  <data name="Suggestion1" xml:space="preserve">
+    <value>以下建議可能有用:
+</value>
+  </data>
+  <data name="OverWriteSuggestion1" xml:space="preserve">
+    <value>檢查你是否選擇了一個選項
+</value>
+  </data>
+  <data name="ErrorCode1" xml:space="preserve">
+    <value>錯誤代碼:</value>
   </data>
 </root>

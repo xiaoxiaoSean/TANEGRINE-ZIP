@@ -186,9 +186,6 @@
   <data name="UnknowFile" xml:space="preserve">
     <value>Unknow file</value>
   </data>
-  <data name="UnknownFileTypeE1" xml:space="preserve">
-    <value>The type of loaded file is unsupported(E1)</value>
-  </data>
   <data name="UnknownFileType" xml:space="preserve">
     <value>The type of loaded file is unsupported</value>
   </data>
@@ -229,5 +226,16 @@ Warning: The original file will be deleted forever and replaced with the new ext
   </data>
   <data name="OverWrite3" xml:space="preserve">
     <value>Yes to all</value>
+  </data>
+  <data name="Suggestion1" xml:space="preserve">
+    <value>Following suggestion may be useful:
+</value>
+  </data>
+  <data name="OverWriteSuggestion1" xml:space="preserve">
+    <value>Check if you selected an option
+</value>
+  </data>
+  <data name="ErrorCode1" xml:space="preserve">
+    <value>ERR CODE:</value>
   </data>
 </root>
