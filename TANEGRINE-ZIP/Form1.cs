@@ -1,7 +1,9 @@
 using SharpCompress.Archives;
 using SharpCompress.Common;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO.Compression;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 namespace TANEGRINE_ZIP
 {
     public partial class Form1 : Form
@@ -154,66 +156,78 @@ namespace TANEGRINE_ZIP
                                 }
                                 else
                                 {
-                                    if (selectedSet.Contains(entry.Name))
+                                    if (!selectedSet.Contains(entry.Name)) { 
+                                        continue; 
+                                    }
+                                    if (string.IsNullOrEmpty(entry.Name))
                                     {
                                         Directory.CreateDirectory(Path.Combine(destinationPath, entry.FullName));
-                                        if (File.Exists(Path.Combine(destinationPath, entry.FullName)))
+                                    }
+                                    if (File.Exists(Path.Combine(destinationPath, entry.FullName)))
+                                    {
+                                        if (allOverWrite)
                                         {
+                                            goto cExtract;
+                                        }
+                                        else
+                                        {
+                                            if ((!allOverWrite) && (!allSkip))
+                                            {
+                                            reShowOWF:
+                                                OverWriteOrNotForm owonf = new OverWriteOrNotForm();
+                                                owonf.ShowDialog();
+                                                owonf.SyncBool(ref allOverWrite);
+                                                owonf.SyncBool2(ref allSkip);
+                                                int OWFresult = -1;
+                                                owonf.GetResult(ref OWFresult);
+                                                if ((!allOverWrite) && (!allSkip))
+                                                {
+                                                    switch (OWFresult)
+                                                    {
+                                                        default:
+                                                            break;
+                                                        case -100:
+                                                            goto reShowOWF;
+                                                        case 1:
+                                                            goto cExtract;
+                                                        case 2:
+                                                            continue;
+                                                        case 1000:
+                                                            stopJob = true;
+                                                            break;
+                                                    }
+                                                }
+                                            }
                                             if (allOverWrite)
                                             {
                                                 goto cExtract;
                                             }
-                                            else
+                                            if (allSkip)
                                             {
-                                                if ((!allOverWrite) && (!allSkip))
-                                                {
-                                                reShowOWF:
-                                                    OverWriteOrNotForm owonf = new OverWriteOrNotForm();
-                                                    owonf.ShowDialog();
-                                                    owonf.SyncBool(ref allOverWrite);
-                                                    owonf.SyncBool2(ref allSkip);
-                                                    int OWFresult = -1;
-                                                    owonf.GetResult(ref OWFresult);
-                                                    if ((!allOverWrite) && (!allSkip))
-                                                    {
-                                                        switch (OWFresult)
-                                                        {
-                                                            default:
-                                                                break;
-                                                            case -100:
-                                                                goto reShowOWF; break;
-                                                            case 1:
-                                                                goto cExtract; break;
-                                                            case 2:
-                                                                continue;
-                                                            case 1000:
-                                                                stopJob = true;
-                                                                break;
-                                                        }
-                                                    }
-                                                }
-                                                if (allOverWrite)
-                                                {
-                                                    goto cExtract;
-                                                }
-                                                if (allSkip)
-                                                {
-                                                    continue;
-                                                }
-                                                if (stopJob)
-                                                {
-                                                    isDoingJob = false;
-                                                    return;
-                                                }
+                                                continue;
+                                            }
+                                            if (stopJob)
+                                            {
+                                                isDoingJob = false;
+                                                return;
                                             }
                                         }
-                                    cExtract:
-                                        entry.ExtractToFile(Path.Combine(destinationPath, entry.FullName), true);
                                     }
-                                    else
+                                cExtract:
+                                    string? parent = Path.GetDirectoryName(Path.Combine(destinationPath, entry.FullName));
+                                    if (!Directory.Exists(parent))
                                     {
-                                        continue;
+                                        if (!string.IsNullOrEmpty(parent))
+                                        {
+                                            Directory.CreateDirectory(parent);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show(LanguageManager.Get("ErrorTitle") + "\n an error occurred\nwe cannot create the parent directory,because the directory information we got is empty");
+                                        }
                                     }
+                                    File.Delete(Path.Combine(destinationPath, entry.FullName));
+                                    entry.ExtractToFile(Path.Combine(destinationPath, entry.FullName), true);
                                 }
                             }
                             break;
@@ -284,44 +298,240 @@ namespace TANEGRINE_ZIP
 
                 await Task.Run(() =>
                 {
-                    using var archive = ArchiveFactory.OpenArchive(zippath);
-
+                            ZipArchive? archiveZIP=null ;
+                   IArchive ?archiveRAR=null;
+                    bool allOverWrite = false;
+                    bool allSkip = false;
+                    bool isThisFileExtracted = false;
+                    bool stopJob = false;
+                    switch (fileType)
+                    {
+                        case FileDetector.FileType.Unknown:
+                            return;
+                        case FileDetector.FileType.Zip:
+                            archiveZIP = ZipFile.OpenRead(zippath);
+                            break;
+                        case FileDetector.FileType.Rar:
+                            archiveRAR = ArchiveFactory.OpenArchive(zippath);
+                            break;
+                        case FileDetector.FileType.SevenZip:
+                            break;
+                        case FileDetector.FileType.Tar:
+                            break;
+                        case FileDetector.FileType.GZip:
+                            break;
+                        case FileDetector.FileType.BZip2:
+                            break;
+                        case FileDetector.FileType.Xz:
+                            break;
+                        case FileDetector.FileType.Lz4:
+                            break;
+                        case FileDetector.FileType.Zstd:
+                            break;
+                        case FileDetector.FileType.Iso:
+                            break;
+                        case FileDetector.FileType.Wim:
+                            break;
+                        default:
+                            return;
+                    }
                     switch (fileType)
                     {
                         case FileDetector.FileType.Unknown:
                             break;
 
                         case FileDetector.FileType.Zip:
-                            var entries = archive.Entries
-                                .Where(e => !e.IsDirectory)
-                                .ToList();
-
-                            int total = entries.Count;
-                            int current = 0;
-
-                            foreach (var entry in entries)
+                            foreach (var entry in archiveZIP.Entries)
                             {
-                                entry.WriteToDirectory(destinationPath, new ExtractionOptions
+                                if (string.IsNullOrEmpty(entry.Name))
                                 {
-                                    ExtractFullPath = true,
-                                    Overwrite = true
-                                });
-
-                                current++;
-
-                                if (current % 10 == 0 || current == total)
+                                    continue;
+                                }
+                                else
                                 {
-                                    int progress = total == 0 ? 100 : current * 100 / total;
-
-                                    Invoke(() =>
+                                    if (string.IsNullOrEmpty(entry.Name))
                                     {
-                                        statusProgressBar.Value = progress;
-                                        statusLabel.Text = LanguageManager.Get("ExtractingText") + $" {current}/{total}";
-                                    });
+                                        Directory.CreateDirectory(Path.Combine(destinationPath, entry.FullName));
+                                    }
+                                    if (File.Exists(Path.Combine(destinationPath, entry.FullName)))
+                                    {
+                                        if (allOverWrite)
+                                        {
+                                            goto cExtract;
+                                        }
+                                        else
+                                        {
+                                            if ((!allOverWrite) && (!allSkip))
+                                            {
+                                            reShowOWF:
+                                                OverWriteOrNotForm owonf = new OverWriteOrNotForm();
+                                                owonf.ShowDialog();
+                                                owonf.SyncBool(ref allOverWrite);
+                                                owonf.SyncBool2(ref allSkip);
+                                                int OWFresult = -1;
+                                                owonf.GetResult(ref OWFresult);
+                                                if ((!allOverWrite) && (!allSkip))
+                                                {
+                                                    switch (OWFresult)
+                                                    {
+                                                        default:
+                                                            break;
+                                                        case -100:
+                                                            goto reShowOWF;
+                                                        case 1:
+                                                            goto cExtract;
+                                                        case 2:
+                                                            continue;
+                                                        case 1000:
+                                                            stopJob = true;
+                                                            break;
+                                                    }
+                                                }
+                                            }
+                                            if (allOverWrite)
+                                            {
+                                                goto cExtract;
+                                            }
+                                            if (allSkip)
+                                            {
+                                                continue;
+                                            }
+                                            if (stopJob)
+                                            {
+                                                isDoingJob = false;
+                                                return;
+                                            }
+                                        }
+                                    }
+                                cExtract:
+                                    string? parent = Path.GetDirectoryName(Path.Combine(destinationPath, entry.FullName));
+                                    if (!Directory.Exists(parent))
+                                    {
+                                        if (!string.IsNullOrEmpty(parent))
+                                        {
+                                            Directory.CreateDirectory(parent);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show(LanguageManager.Get("ErrorTitle") + "\n an error occurred\nwe cannot create the parent directory,because the directory information we got is empty");
+                                        }
+                                    }
+                                    entry.ExtractToFile(Path.Combine(destinationPath, entry.FullName), true);
                                 }
                             }
                             break;
                         case FileDetector.FileType.Rar:
+                            foreach (var entry in archiveRAR.Entries)
+                            {
+                                // Skip directories
+                                if (entry.IsDirectory)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    // Get the destination path of the current file
+                                    string filePath = Path.Combine(destinationPath, entry.Key);
+
+                                    // Check whether the target file already exists
+                                    if (File.Exists(filePath))
+                                    {
+                                        if (allOverWrite)
+                                        {
+                                            goto cExtract;
+                                        }
+                                        else
+                                        {
+                                            if ((!allOverWrite) && (!allSkip))
+                                            {
+                                            reShowOWF:
+                                                OverWriteOrNotForm owonf = new OverWriteOrNotForm();
+                                                owonf.ShowDialog();
+
+                                                owonf.SyncBool(ref allOverWrite);
+                                                owonf.SyncBool2(ref allSkip);
+
+                                                int OWFresult = -1;
+                                                owonf.GetResult(ref OWFresult);
+
+                                                if ((!allOverWrite) && (!allSkip))
+                                                {
+                                                    switch (OWFresult)
+                                                    {
+                                                        default:
+                                                            break;
+
+                                                        // Show the overwrite dialog again
+                                                        case -100:
+                                                            goto reShowOWF;
+
+                                                        // Overwrite the current file
+                                                        case 1:
+                                                            goto cExtract;
+
+                                                        // Skip the current file
+                                                        case 2:
+                                                            continue;
+
+                                                        // Stop the entire extraction task
+                                                        case 1000:
+                                                            stopJob = true;
+                                                            break;
+                                                    }
+                                                }
+
+                                                // Overwrite all remaining files
+                                                if (allOverWrite)
+                                                {
+                                                    goto cExtract;
+                                                }
+
+                                                // Skip all remaining files
+                                                if (allSkip)
+                                                {
+                                                    continue;
+                                                }
+
+                                                // Stop the entire extraction task
+                                                if (stopJob)
+                                                {
+                                                    isDoingJob = false;
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                cExtract:
+
+                                    // Get the parent directory of the destination file
+                                    string? parent = Path.GetDirectoryName(filePath);
+
+                                    // Create the parent directory if it does not exist
+                                    if (!Directory.Exists(parent))
+                                    {
+                                        if (!string.IsNullOrEmpty(parent))
+                                        {
+                                            Directory.CreateDirectory(parent);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show(
+                                                LanguageManager.Get("ErrorTitle") +
+                                                "\n an error occurred\nwe cannot create the parent directory,because the directory information we got is empty");
+                                        }
+                                    }
+
+                                    // Extract the file while preserving its full directory structure
+                                    entry.WriteToDirectory(
+                                        destinationPath,
+                                        new ExtractionOptions
+                                        {
+                                            ExtractFullPath = true,
+                                            Overwrite = true
+                                        });
+                                }
+                            }
                             break;
                         case FileDetector.FileType.SevenZip:
                             break;
@@ -432,7 +642,8 @@ namespace TANEGRINE_ZIP
                     statusProgressBar.Value = 50;
                     statusLabel.Text = LanguageManager.Get("ExtractingText");
                     LoadArchiveAsync(zippath);
-                    await ExtractSelectedEntriesAsync(zippath, fileBox.Items.Cast<string>().ToList(), mainFolderBrowserDialog.SelectedPath);
+                    MessageBox.Show("excute");
+                    await ExtractAllEntriesAsync(zippath, mainFolderBrowserDialog.SelectedPath);
                 }
             }
         }

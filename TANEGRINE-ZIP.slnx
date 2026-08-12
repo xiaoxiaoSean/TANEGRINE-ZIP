@@ -1,4 +1,20 @@
 <Solution>
   <Folder Name="/解决方案项/" />
+  <Project Path="../../../../../Program Files/MI/Xiaomi Cloud/小米云服务.exe">
+    <BuildType Project="Release" />
+    <Platform Project="x64" />
+    <Properties Name="DebuggerProjectSystem">
+      <Property Name="AttachLaunchAction" Value="No" />
+      <Property Name="Environment" Value="默认值" />
+      <Property Name="Executable" Value="C:\Program Files\MI\Xiaomi Cloud\小米云服务.exe" />
+      <Property Name="IORedirection" Value="Auto" />
+      <Property Name="LaunchingEngine" Value="00000000-0000-0000-0000-000000000000" />
+      <Property Name="LaunchSQLEngine" Value="No" />
+      <Property Name="PortSupplier" Value="00000000-0000-0000-0000-000000000000" />
+      <Property Name="RemoteMachine" Value="SEAN-PC" />
+      <Property Name="StartingDirectory" Value="C:\Program Files\MI\Xiaomi Cloud" />
+      <Property Name="UseLegacyDebugEngines" Value="No" />
+    </Properties>
+  </Project>
   <Project Path="TANEGRINE-ZIP/TANEGRINE-ZIP.csproj" />
 </Solution>

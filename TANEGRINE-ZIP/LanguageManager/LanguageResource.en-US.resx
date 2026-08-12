@@ -238,4 +238,7 @@ Warning: The original file will be deleted forever and replaced with the new ext
   <data name="ErrorCode1" xml:space="preserve">
     <value>ERR CODE:</value>
   </data>
+  <data name="OverWrite5" xml:space="preserve">
+    <value>Cancel(Stop this job)</value>
+  </data>
 </root>

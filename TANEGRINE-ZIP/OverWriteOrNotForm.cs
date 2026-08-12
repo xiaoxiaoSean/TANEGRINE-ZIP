@@ -46,24 +46,29 @@ namespace TANEGRINE_ZIP
             {
                 default:
                     MessageBox.Show(LanguageManager.Get("Suggestion1") + LanguageManager.Get("OverWriteSuggestion1") + LanguageManager.Get("ErrorCode1") + "OWFSIES" + listBox1.SelectedIndex);
-                    break;
+                    return;
                 case 0://yes
                     output = 1;
                     aow = false;
+                    askip = false;
                     break;
                 case 1://no
                     output = 2;
                     aow = false;
+                    askip = false;
                     break;
                 case 2://yes to all
-                    output = -100;
+                    output = -99;
                     aow = true;
+                    askip = false;
                     break;
                 case 3://no to all
-                    output = -100;
+                    output = -99;
                     aow = false;
+                    askip = true;
                     break;
             }
+            this.Close();
         }
     }
 }

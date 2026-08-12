@@ -238,4 +238,7 @@
   <data name="ErrorCode1" xml:space="preserve">
     <value>错误代码:</value>
   </data>
+  <data name="OverWrite5" xml:space="preserve">
+    <value>取消(停止这个任务)</value>
+  </data>
 </root>
