@@ -154,7 +154,7 @@
     <value>镜像文件</value>
   </data>
   <data name="mainTabText" xml:space="preserve">
-    <value>主页</value>
+    <value>TZIP</value>
   </data>
   <data name="NoOpenedFile" xml:space="preserve">
     <value>还没有打开文件</value>

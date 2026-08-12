@@ -252,7 +252,7 @@ namespace TANEGRINE_ZIP
                             }
                             break;
                         case FileDetector.FileType.SevenZip:
-                            break;
+                            goto case FileDetector.FileType.Rar;
                         case FileDetector.FileType.Tar:
                             break;
                         case FileDetector.FileType.GZip:
@@ -314,7 +314,7 @@ namespace TANEGRINE_ZIP
                             archiveRAR = ArchiveFactory.OpenArchive(zippath);
                             break;
                         case FileDetector.FileType.SevenZip:
-                            break;
+                            goto case FileDetector.FileType.Rar;
                         case FileDetector.FileType.Tar:
                             break;
                         case FileDetector.FileType.GZip:
@@ -533,6 +533,7 @@ namespace TANEGRINE_ZIP
                             }
                             break;
                         case FileDetector.FileType.SevenZip:
+                            goto case FileDetector.FileType.Rar;
                             break;
                         case FileDetector.FileType.Tar:
                             break;
@@ -575,8 +576,8 @@ namespace TANEGRINE_ZIP
             HashSet<string> selectedSet = new(selectedEntries);
             try
             {
-                isDoingJob = true;                
-                destinationPath=Path.Combine(destinationPath, Path.GetFileName(zippath));
+                isDoingJob = true;
+                destinationPath = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(zippath));
                 await Task.Run(() =>
                 {
                     using var archiveZIP = ZipFile.OpenRead(zippath);
@@ -697,6 +698,7 @@ namespace TANEGRINE_ZIP
                             }
                             break;
                         case FileDetector.FileType.SevenZip:
+                            goto case FileDetector.FileType.Rar;
                             break;
                         case FileDetector.FileType.Tar:
                             break;
@@ -739,7 +741,7 @@ namespace TANEGRINE_ZIP
             try
             {
                 isDoingJob = true;
-                destinationPath = Path.Combine(destinationPath, Path.GetFileName(zippath));
+                destinationPath = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(zippath));
                 await Task.Run(() =>
                 {
                             ZipArchive? archiveZIP=null ;
@@ -759,6 +761,7 @@ namespace TANEGRINE_ZIP
                             archiveRAR = ArchiveFactory.OpenArchive(zippath);
                             break;
                         case FileDetector.FileType.SevenZip:
+                            goto case FileDetector.FileType.Rar;
                             break;
                         case FileDetector.FileType.Tar:
                             break;

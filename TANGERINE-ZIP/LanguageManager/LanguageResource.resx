@@ -154,7 +154,7 @@
     <value>image file</value>
   </data>
   <data name="mainTabText" xml:space="preserve">
-    <value>home</value>
+    <value>TZIP</value>
   </data>
   <data name="NoOpenedFile" xml:space="preserve">
     <value>haven't open a file yet</value>
