@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace TANEGRINE_ZIP
+namespace TANGERINE_ZIP.Tools
 {
     internal class FileDetector
     {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
-    <RootNamespace>TANEGRINE_ZIP</RootNamespace>
+    <RootNamespace>TANGERINE_ZIP</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -29,7 +29,7 @@
       <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="LanguageManager\LanguageResource.zh-CN.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="TZIPResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>

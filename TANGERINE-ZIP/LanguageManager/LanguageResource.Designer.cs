@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TANEGRINE_ZIP {
+namespace TANGERINE_ZIP {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TANEGRINE_ZIP {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TANEGRINE_ZIP.LanguageResource", typeof(LanguageResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TANGERINE_ZIP.LanguageResource", typeof(LanguageResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

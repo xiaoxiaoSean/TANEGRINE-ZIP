@@ -1,4 +1,4 @@
-﻿namespace TANEGRINE_ZIP
+﻿namespace TANGERINE_ZIP
 {
     partial class OverWriteOrNotForm
     {

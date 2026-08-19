@@ -3,11 +3,15 @@ using SharpCompress.Common;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO.Compression;
+using TANGERINE_ZIP.Tools;
+using TANGERINE_ZIP.Tools.LightTool;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-namespace TANEGRINE_ZIP
+//first 5 letters of stage code:F0001
+namespace TANGERINE_ZIP
 {
     public partial class Form1 : Form
     {
+        private TangerineLightOverlay? _lightOverlay;
         public Form1()
         {
             InitializeComponent();
@@ -16,6 +20,15 @@ namespace TANEGRINE_ZIP
         bool isDoingJob = false;
         private void Form1_Load(object sender, EventArgs e)
         {
+            _lightOverlay = new TangerineLightOverlay(this);
+
+            _lightOverlay.TargetFps = 60;
+            _lightOverlay.Radius = 180f;
+            _lightOverlay.LightStrength = 0.18f;
+            _lightOverlay.EdgeStrength = 9.9f;
+            _lightOverlay.EdgeWidth = 3f;
+
+            _lightOverlay.Show(this);
             //begining of the form load,don't write any code before this line
             //set text-started
             statusLabel.Text = LanguageManager.Get("readytext");
@@ -39,6 +52,7 @@ namespace TANEGRINE_ZIP
         }
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            isDoingJob = true;
             if (mainOpenFileDialog.ShowDialog() == DialogResult.OK)
             {
                 zippath = mainOpenFileDialog.FileName;
@@ -102,9 +116,11 @@ namespace TANEGRINE_ZIP
             {
                 return;
             }
+            isDoingJob = false;
         }
         private async Task LoadArchiveAsync(string zippath)
         {
+            isDoingJob = true;
             fileBox.Items.Clear();
             await Task.Run(() =>
             {
@@ -124,8 +140,10 @@ namespace TANEGRINE_ZIP
                     statusProgressBar.Value = 100;
                 });
             });
+            isDoingJob = false;
         }
-        private async Task ExtractSelectedEntriesDIRECTLYAsync(string zippath, List<string> selectedEntries, string destinationPath) {
+        private async Task ExtractSelectedEntriesDIRECTLYAsync(string zippath, List<string> selectedEntries, string destinationPath)
+        {
             var fileType = FileDetector.DetectFileType(zippath);
             HashSet<string> selectedSet = new(selectedEntries);
             try
@@ -601,8 +619,9 @@ namespace TANEGRINE_ZIP
                                 }
                                 else
                                 {
-                                    if (!selectedSet.Contains(entry.Name)) { 
-                                        continue; 
+                                    if (!selectedSet.Contains(entry.Name))
+                                    {
+                                        continue;
                                     }
                                     if (string.IsNullOrEmpty(entry.Name))
                                     {
@@ -744,8 +763,8 @@ namespace TANEGRINE_ZIP
                 destinationPath = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(zippath));
                 await Task.Run(() =>
                 {
-                            ZipArchive? archiveZIP=null ;
-                   IArchive ?archiveRAR=null;
+                    ZipArchive? archiveZIP = null;
+                    IArchive? archiveRAR = null;
                     bool allOverWrite = false;
                     bool allSkip = false;
                     bool isThisFileExtracted = false;
@@ -957,7 +976,7 @@ namespace TANEGRINE_ZIP
                                     // Create the parent directory if it does not exist
                                     if (!Directory.Exists(parent))
                                     {
-                                        if ((!string.IsNullOrEmpty(parent))&&(!Directory.Exists(parent)))
+                                        if ((!string.IsNullOrEmpty(parent)) && (!Directory.Exists(parent)))
                                         {
                                             Directory.CreateDirectory(parent);
                                         }
@@ -1136,6 +1155,13 @@ namespace TANEGRINE_ZIP
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show(LanguageManager.Get("Unavailble1"), "TZIP");
+        }
+
+        private void TZIPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TZIPForm tZIPForm = new TZIPForm();
+            tZIPForm.ShowDialog();
+            tZIPForm.Dispose();
         }
     }
 }

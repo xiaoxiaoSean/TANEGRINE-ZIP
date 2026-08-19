@@ -1,4 +1,4 @@
-﻿namespace TANEGRINE_ZIP
+﻿namespace TANGERINE_ZIP
 {
     partial class Form1
     {
@@ -38,8 +38,7 @@
             extractDirectlySELECTEDToolStripMenuItem = new ToolStripMenuItem();
             extractToAFolderSELECTEDToolStripMenuItem = new ToolStripMenuItem();
             compressToolStripMenuItem = new ToolStripMenuItem();
-            compressALLToolStripMenuItem = new ToolStripMenuItem();
-            compressSELECTEDToolStripMenuItem = new ToolStripMenuItem();
+            compressSelectFileToolStripMenuItem = new ToolStripMenuItem();
             SettingsToolStripMenuItem = new ToolStripMenuItem();
             uninstallFileToolStripMenuItem = new ToolStripMenuItem();
             mainTabControl = new TabControl();
@@ -59,6 +58,7 @@
             // 
             // mainMenu
             // 
+            mainMenu.BackColor = Color.Black;
             mainMenu.ImageScalingSize = new Size(24, 24);
             mainMenu.Items.AddRange(new ToolStripItem[] { TZIPToolStripMenuItem, OpenToolStripMenuItem, extractToolStripMenuItem, compressToolStripMenuItem, SettingsToolStripMenuItem, uninstallFileToolStripMenuItem });
             mainMenu.Location = new Point(0, 0);
@@ -68,12 +68,15 @@
             // 
             // TZIPToolStripMenuItem
             // 
+            TZIPToolStripMenuItem.ForeColor = Color.White;
             TZIPToolStripMenuItem.Name = "TZIPToolStripMenuItem";
             TZIPToolStripMenuItem.Size = new Size(63, 28);
             TZIPToolStripMenuItem.Text = "TZIP";
+            TZIPToolStripMenuItem.Click += TZIPToolStripMenuItem_Click;
             // 
             // OpenToolStripMenuItem
             // 
+            OpenToolStripMenuItem.ForeColor = Color.White;
             OpenToolStripMenuItem.Name = "OpenToolStripMenuItem";
             OpenToolStripMenuItem.Size = new Size(74, 28);
             OpenToolStripMenuItem.Text = "Open";
@@ -82,6 +85,7 @@
             // extractToolStripMenuItem
             // 
             extractToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { extractDirectlyALLToolStripMenuItem, extractToFolderALLToolStripMenuItem, extractDirectlySELECTEDToolStripMenuItem, extractToAFolderSELECTEDToolStripMenuItem });
+            extractToolStripMenuItem.ForeColor = Color.White;
             extractToolStripMenuItem.Name = "extractToolStripMenuItem";
             extractToolStripMenuItem.Size = new Size(85, 28);
             extractToolStripMenuItem.Text = "extract";
@@ -117,25 +121,21 @@
             // 
             // compressToolStripMenuItem
             // 
-            compressToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { compressALLToolStripMenuItem, compressSELECTEDToolStripMenuItem });
+            compressToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { compressSelectFileToolStripMenuItem });
+            compressToolStripMenuItem.ForeColor = Color.White;
             compressToolStripMenuItem.Name = "compressToolStripMenuItem";
             compressToolStripMenuItem.Size = new Size(108, 28);
             compressToolStripMenuItem.Text = "compress";
             // 
-            // compressALLToolStripMenuItem
+            // compressSelectFileToolStripMenuItem
             // 
-            compressALLToolStripMenuItem.Name = "compressALLToolStripMenuItem";
-            compressALLToolStripMenuItem.Size = new Size(223, 34);
-            compressALLToolStripMenuItem.Text = "all";
-            // 
-            // compressSELECTEDToolStripMenuItem
-            // 
-            compressSELECTEDToolStripMenuItem.Name = "compressSELECTEDToolStripMenuItem";
-            compressSELECTEDToolStripMenuItem.Size = new Size(223, 34);
-            compressSELECTEDToolStripMenuItem.Text = "selected only";
+            compressSelectFileToolStripMenuItem.Name = "compressSelectFileToolStripMenuItem";
+            compressSelectFileToolStripMenuItem.Size = new Size(244, 34);
+            compressSelectFileToolStripMenuItem.Text = "Select (a) file (s)";
             // 
             // SettingsToolStripMenuItem
             // 
+            SettingsToolStripMenuItem.ForeColor = Color.White;
             SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem";
             SettingsToolStripMenuItem.Size = new Size(94, 28);
             SettingsToolStripMenuItem.Text = "settings";
@@ -143,6 +143,7 @@
             // 
             // uninstallFileToolStripMenuItem
             // 
+            uninstallFileToolStripMenuItem.ForeColor = Color.White;
             uninstallFileToolStripMenuItem.Name = "uninstallFileToolStripMenuItem";
             uninstallFileToolStripMenuItem.Size = new Size(263, 28);
             uninstallFileToolStripMenuItem.Text = "uninstall the file(not delete)";
@@ -169,7 +170,9 @@
             // 
             // fileBox
             // 
+            fileBox.BackColor = Color.Black;
             fileBox.Dock = DockStyle.Fill;
+            fileBox.ForeColor = Color.White;
             fileBox.FormattingEnabled = true;
             fileBox.Location = new Point(0, 0);
             fileBox.Name = "fileBox";
@@ -178,6 +181,7 @@
             // 
             // statusStrip1
             // 
+            statusStrip1.BackColor = Color.Black;
             statusStrip1.ImageScalingSize = new Size(24, 24);
             statusStrip1.Items.AddRange(new ToolStripItem[] { statusProgressBar, statusLabel });
             statusStrip1.Location = new Point(0, 690);
@@ -192,6 +196,7 @@
             // 
             // statusLabel
             // 
+            statusLabel.ForeColor = Color.White;
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(137, 24);
             statusLabel.Text = "TZIP is starting";
@@ -242,8 +247,7 @@
         private ToolStripMenuItem extractToFolderALLToolStripMenuItem;
         private ToolStripMenuItem extractDirectlySELECTEDToolStripMenuItem;
         private ToolStripMenuItem extractToAFolderSELECTEDToolStripMenuItem;
-        private ToolStripMenuItem compressALLToolStripMenuItem;
-        private ToolStripMenuItem compressSELECTEDToolStripMenuItem;
+        private ToolStripMenuItem compressSelectFileToolStripMenuItem;
         private SaveFileDialog mainSaveFileDialog;
         private FolderBrowserDialog mainFolderBrowserDialog;
     }

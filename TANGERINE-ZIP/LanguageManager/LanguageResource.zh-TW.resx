@@ -242,4 +242,19 @@
   <data name="OverWrite5" xml:space="preserve">
     <value>取消(停止這個任務)</value>
   </data>
+  <data name="FreeFilePickerFormTitle" xml:space="preserve">
+    <value>選擇一個或多個檔案或資料夾</value>
+  </data>
+  <data name="FreeFilePickerFormGoBack" xml:space="preserve">
+    <value>返回到上一級</value>
+  </data>
+  <data name="StageCodeTip1" xml:space="preserve">
+    <value>發生了一個錯誤
+階段碼是：
+</value>
+  </data>
+  <data name="StageCodeTip2" xml:space="preserve">
+    <value>詳情：
+</value>
+  </data>
 </root>

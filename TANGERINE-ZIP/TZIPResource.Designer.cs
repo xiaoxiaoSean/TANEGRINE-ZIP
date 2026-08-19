@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TANEGRINE_ZIP {
+namespace TANGERINE_ZIP {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TANEGRINE_ZIP {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TANEGRINE_ZIP.TZIPResource", typeof(TZIPResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TANGERINE_ZIP.TZIPResource", typeof(TZIPResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,16 @@ namespace TANEGRINE_ZIP {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap Kiro {
+            get {
+                object obj = ResourceManager.GetObject("Kiro", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

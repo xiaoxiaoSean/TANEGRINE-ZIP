@@ -241,4 +241,19 @@ Warning: The original file will be deleted forever and replaced with the new ext
   <data name="OverWrite5" xml:space="preserve">
     <value>Cancel(Stop this job)</value>
   </data>
+  <data name="FreeFilePickerFormTitle" xml:space="preserve">
+    <value>Select files and file folders here</value>
+  </data>
+  <data name="FreeFilePickerFormGoBack" xml:space="preserve">
+    <value>Go back to the previous level</value>
+  </data>
+  <data name="StageCodeTip1" xml:space="preserve">
+    <value>An Error occued
+Stage Code is :
+</value>
+  </data>
+  <data name="StageCodeTip2" xml:space="preserve">
+    <value>Detail:
+</value>
+  </data>
 </root>
