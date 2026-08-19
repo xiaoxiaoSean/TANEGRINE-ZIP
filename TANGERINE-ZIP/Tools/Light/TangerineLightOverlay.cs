@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TANGERINE_ZIP.Tools.LightTool
@@ -12,25 +11,14 @@ namespace TANGERINE_ZIP.Tools.LightTool
     public sealed class TangerineLightOverlay : Form
     {
         private readonly Form _targetForm;
-
-        /*
-         * Render driver
-         *
-         * System.Threading.Timer does not directly render.
-         * It only posts a render request into the WinForms UI message queue.
-         *
-         * Only one posted tick is allowed to exist at a time.
-         * This prevents the render queue from growing when the UI thread
-         * is temporarily busy.
-         */
-        private readonly System.Threading.Timer _renderDriver;
         private readonly SynchronizationContext _syncContext;
+        private readonly System.Threading.Timer _renderDriver;
 
         private volatile bool _tickPosted;
+        private volatile bool _running;
 
         private POINT _mouseScreenPosition;
 
-        private bool _running;
         private bool _mouseInside;
 
         private float _presentationDelayMs = 0f;
@@ -49,40 +37,73 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         private bool _isMouseLight = true;
 
-        private readonly Stopwatch _frameStopwatch = new Stopwatch();
+        private readonly Stopwatch _frameStopwatch =
+            new Stopwatch();
 
-        private double _minFrameMilliseconds = 1000.0 / 120.0;
+        private double _minFrameMilliseconds =
+            1000.0 / 120.0;
 
-        private readonly int _processorCount = Environment.ProcessorCount;
+        private bool _timerResolutionRaised;
 
-        #region Win32
+        #region Win32 Constants
 
-        private const int WS_EX_LAYERED = 0x00080000;
-        private const int WS_EX_TRANSPARENT = 0x00000020;
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
+        private const int WS_EX_LAYERED =
+            0x00080000;
 
-        private const int WM_NCHITTEST = 0x0084;
-        private const int WM_MOUSEACTIVATE = 0x0021;
+        private const int WS_EX_TRANSPARENT =
+            0x00000020;
 
-        /*
-         * WM_PRINT asks a window to paint itself into the supplied DC.
-         */
-        private const int WM_PRINT = 0x0317;
+        private const int WS_EX_TOOLWINDOW =
+            0x00000080;
 
-        private const int HTTRANSPARENT = -1;
-        private const int MA_NOACTIVATE = 3;
+        private const int WS_EX_NOACTIVATE =
+            0x08000000;
 
-        private const int ULW_ALPHA = 0x00000002;
+        private const int WM_NCHITTEST =
+            0x0084;
 
-        private const byte AC_SRC_OVER = 0;
-        private const byte AC_SRC_ALPHA = 1;
+        private const int WM_MOUSEACTIVATE =
+            0x0021;
 
-        private const int PRF_CHECKVISIBLE = 0x00000001;
-        private const int PRF_NONCLIENT = 0x00000002;
-        private const int PRF_CLIENT = 0x00000004;
-        private const int PRF_ERASEBKGND = 0x00000008;
-        private const int PRF_CHILDREN = 0x00000010;
+        private const int WM_PRINT =
+            0x0317;
+
+        private const int HTTRANSPARENT =
+            -1;
+
+        private const int MA_NOACTIVATE =
+            3;
+
+        private const int ULW_ALPHA =
+            0x00000002;
+
+        private const byte AC_SRC_OVER =
+            0;
+
+        private const byte AC_SRC_ALPHA =
+            1;
+
+        private const int PRF_CHECKVISIBLE =
+            0x00000001;
+
+        private const int PRF_NONCLIENT =
+            0x00000002;
+
+        private const int PRF_CLIENT =
+            0x00000004;
+
+        private const int PRF_ERASEBKGND =
+            0x00000008;
+
+        private const int PRF_CHILDREN =
+            0x00000010;
+
+        private const uint DIB_RGB_COLORS =
+            0;
+
+        #endregion
+
+        #region Structures
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
@@ -90,7 +111,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
             public int X;
             public int Y;
 
-            public POINT(int x, int y)
+            public POINT(
+                int x,
+                int y)
             {
                 X = x;
                 Y = y;
@@ -103,7 +126,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
             public int cx;
             public int cy;
 
-            public SIZE(int width, int height)
+            public SIZE(
+                int width,
+                int height)
             {
                 cx = width;
                 cy = height;
@@ -160,7 +185,13 @@ namespace TANGERINE_ZIP.Tools.LightTool
             public RGBQUAD bmiColors;
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
+        #endregion
+
+        #region Win32 Imports
+
+        [DllImport(
+            "user32.dll",
+            SetLastError = true)]
         private static extern bool UpdateLayeredWindow(
             IntPtr hWnd,
             IntPtr hdcDst,
@@ -173,10 +204,13 @@ namespace TANGERINE_ZIP.Tools.LightTool
             int dwFlags);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr GetDC(IntPtr hWnd);
+        private static extern IntPtr GetDC(
+            IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        private static extern int ReleaseDC(
+            IntPtr hWnd,
+            IntPtr hDC);
 
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(
@@ -186,12 +220,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
             IntPtr lParam);
 
         [DllImport("user32.dll")]
-        private static extern bool GetCursorPos(out POINT lpPoint);
-
-        [DllImport("user32.dll")]
-        private static extern bool ScreenToClient(
-            IntPtr hWnd,
-            ref POINT lpPoint);
+        private static extern bool GetCursorPos(
+            out POINT lpPoint);
 
         [DllImport("user32.dll")]
         private static extern bool ClientToScreen(
@@ -204,10 +234,12 @@ namespace TANGERINE_ZIP.Tools.LightTool
             out RECT lpRect);
 
         [DllImport("gdi32.dll")]
-        private static extern IntPtr CreateCompatibleDC(IntPtr hdc);
+        private static extern IntPtr CreateCompatibleDC(
+            IntPtr hdc);
 
         [DllImport("gdi32.dll")]
-        private static extern bool DeleteDC(IntPtr hdc);
+        private static extern bool DeleteDC(
+            IntPtr hdc);
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr SelectObject(
@@ -215,7 +247,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
             IntPtr h);
 
         [DllImport("gdi32.dll")]
-        private static extern bool DeleteObject(IntPtr ho);
+        private static extern bool DeleteObject(
+            IntPtr ho);
 
         [DllImport("gdi32.dll")]
         private static extern IntPtr CreateDIBSection(
@@ -227,40 +260,52 @@ namespace TANGERINE_ZIP.Tools.LightTool
             uint dwOffset);
 
         [DllImport("winmm.dll")]
-        private static extern uint timeBeginPeriod(uint uPeriod);
+        private static extern uint timeBeginPeriod(
+            uint uPeriod);
 
         [DllImport("winmm.dll")]
-        private static extern uint timeEndPeriod(uint uPeriod);
+        private static extern uint timeEndPeriod(
+            uint uPeriod);
 
         #endregion
 
         #region Native Resources
 
         private IntPtr _sourceDc;
+
         private IntPtr _sourceBitmap;
+
         private IntPtr _sourceBits;
 
         private int _sourceWidth;
+
         private int _sourceHeight;
 
         private IntPtr _outputDc;
+
         private IntPtr _outputBitmap;
+
         private IntPtr _outputBits;
 
         private int _outputWidth;
+
         private int _outputHeight;
 
         #endregion
 
         #region Managed Buffers
 
-        private byte[] _sourceBuffer = Array.Empty<byte>();
+        private byte[] _sourceBuffer =
+            Array.Empty<byte>();
 
-        private byte[] _outputBuffer = Array.Empty<byte>();
+        private byte[] _outputBuffer =
+            Array.Empty<byte>();
 
-        private float[] _lumaBuffer = Array.Empty<float>();
+        private float[] _lumaBuffer =
+            Array.Empty<float>();
 
-        private float[] _lightLut = Array.Empty<float>();
+        private float[] _lightLut =
+            Array.Empty<float>();
 
         private int _lutRadius;
 
@@ -271,35 +316,50 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private bool _hasValidFrame;
 
         private int _lastOffsetX;
+
         private int _lastOffsetY;
+
         private int _lastWidth;
+
         private int _lastHeight;
 
         #endregion
 
-        private bool _timerResolutionRaised;
-
-        public TangerineLightOverlay(Form targetForm)
+        public TangerineLightOverlay(
+            Form targetForm)
         {
             _targetForm =
                 targetForm
-                ?? throw new ArgumentNullException(nameof(targetForm));
+                ?? throw new ArgumentNullException(
+                    nameof(targetForm));
 
             _syncContext =
                 SynchronizationContext.Current
                 ?? new WindowsFormsSynchronizationContext();
 
-            FormBorderStyle = FormBorderStyle.None;
+            FormBorderStyle =
+                FormBorderStyle.None;
+
             ShowInTaskbar = false;
-            StartPosition = FormStartPosition.Manual;
+
+            StartPosition =
+                FormStartPosition.Manual;
+
             TopMost = false;
+
             TabStop = false;
 
-            _targetForm.Move += TargetForm_Move;
-            _targetForm.Resize += TargetForm_Resize;
-            _targetForm.FormClosed += TargetForm_FormClosed;
+            _targetForm.Move +=
+                TargetForm_Move;
 
-            GetCursorPos(out _mouseScreenPosition);
+            _targetForm.Resize +=
+                TargetForm_Resize;
+
+            _targetForm.FormClosed +=
+                TargetForm_FormClosed;
+
+            GetCursorPos(
+                out _mouseScreenPosition);
 
             CreateNativeResources();
 
@@ -309,34 +369,42 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             _frameStopwatch.Start();
 
-            _renderDriver = new System.Threading.Timer(
-                PostRenderTick,
-                null,
-                0,
-                1);
-
             _running = true;
+
+            _renderDriver =
+                new System.Threading.Timer(
+                    PostRenderTick,
+                    null,
+                    0,
+                    1);
         }
 
         #region Properties
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public int TargetFps
         {
             get => _targetFps;
 
             set
             {
-                _targetFps = Math.Clamp(value, 15, 240);
+                _targetFps =
+                    Math.Clamp(
+                        value,
+                        15,
+                        240);
 
                 _minFrameMilliseconds =
-                    1000.0 / _targetFps;
+                    1000.0 /
+                    _targetFps;
             }
         }
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public float Radius
         {
             get => _radius;
@@ -344,96 +412,121 @@ namespace TANGERINE_ZIP.Tools.LightTool
             set
             {
                 float newValue =
-                    Math.Clamp(value, 20f, 1024f);
+                    Math.Clamp(
+                        value,
+                        20f,
+                        1024f);
 
-                if (Math.Abs(_radius - newValue) < 0.001f)
+                if (Math.Abs(
+                        _radius -
+                        newValue) < 0.001f)
+                {
                     return;
+                }
 
-                _radius = newValue;
+                _radius =
+                    newValue;
 
                 RebuildLightLut();
+
                 EnsureOutputDib();
             }
         }
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public Color LightColor
         {
             get => _lightColor;
-            set => _lightColor = value;
+
+            set =>
+                _lightColor = value;
         }
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public float LightStrength
         {
             get => _lightStrength;
 
             set =>
                 _lightStrength =
-                    Math.Clamp(value, 0f, 1f);
+                    Math.Clamp(
+                        value,
+                        0f,
+                        1f);
         }
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public float EdgeStrength
         {
             get => _edgeStrength;
 
             set =>
                 _edgeStrength =
-                    Math.Clamp(value, 0f, 2f);
+                    Math.Clamp(
+                        value,
+                        0f,
+                        2f);
         }
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public float EdgeWidth
         {
             get => _edgeWidth;
 
             set =>
                 _edgeWidth =
-                    Math.Clamp(value, 0.5f, 6f);
+                    Math.Clamp(
+                        value,
+                        0.5f,
+                        6f);
         }
 
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public bool IsMouseLight
         {
             get => _isMouseLight;
-            set => _isMouseLight = value;
+
+            set =>
+                _isMouseLight = value;
         }
 
-        /*
-         * 保留这个属性以兼容你原来的调用代码。
-         *
-         * 这里不再用于鼠标坐标预测。
-         * 因为预测本身不能解决动态控件捕获时序造成的画面错位，
-         * 反而会制造另外一种光效偏移。
-         */
         [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
         public float PresentationDelayMs
         {
             get => _presentationDelayMs;
 
             set =>
                 _presentationDelayMs =
-                    Math.Max(0f, value);
+                    Math.Max(
+                        0f,
+                        value);
         }
 
         #endregion
 
         #region Window
 
-        protected override bool ShowWithoutActivation => true;
+        protected override bool ShowWithoutActivation =>
+            true;
 
         protected override CreateParams CreateParams
         {
             get
             {
-                CreateParams cp = base.CreateParams;
+                CreateParams cp =
+                    base.CreateParams;
 
                 cp.ExStyle |=
                     WS_EX_LAYERED |
@@ -445,9 +538,11 @@ namespace TANGERINE_ZIP.Tools.LightTool
             }
         }
 
-        protected override void WndProc(ref Message m)
+        protected override void WndProc(
+            ref Message m)
         {
-            if (m.Msg == WM_NCHITTEST)
+            if (m.Msg ==
+                WM_NCHITTEST)
             {
                 m.Result =
                     (IntPtr)HTTRANSPARENT;
@@ -455,7 +550,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
             }
 
-            if (m.Msg == WM_MOUSEACTIVATE)
+            if (m.Msg ==
+                WM_MOUSEACTIVATE)
             {
                 m.Result =
                     (IntPtr)MA_NOACTIVATE;
@@ -470,7 +566,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         #region Render Driver
 
-        private void PostRenderTick(object? state)
+        private void PostRenderTick(
+            object? state)
         {
             if (!_running)
                 return;
@@ -480,12 +577,20 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             _tickPosted = true;
 
-            _syncContext.Post(
-                RunTick,
-                null);
+            try
+            {
+                _syncContext.Post(
+                    RunTick,
+                    null);
+            }
+            catch
+            {
+                _tickPosted = false;
+            }
         }
 
-        private void RunTick(object? state)
+        private void RunTick(
+            object? state)
         {
             _tickPosted = false;
 
@@ -506,24 +611,44 @@ namespace TANGERINE_ZIP.Tools.LightTool
             if (!_targetForm.IsHandleCreated)
                 return;
 
-            if (!GetCursorPos(out _mouseScreenPosition))
+            /*
+             * =====================================================
+             * 关键修改：
+             *
+             * 鼠标始终保留为 SCREEN 坐标。
+             *
+             * 不再：
+             *
+             * ScreenToClient()
+             *
+             * 因为后面我们可以直接用：
+             *
+             * MouseScreen - ClientOriginScreen
+             *
+             * 得到 Client 坐标。
+             * =====================================================
+             */
+            if (!GetCursorPos(
+                    out POINT mouseScreen))
+            {
                 return;
+            }
+
+            _mouseScreenPosition =
+                mouseScreen;
 
             /*
-             * 鼠标坐标永远只做一次转换：
-             *
-             * screen
-             *   ↓
-             * target client
-             *
-             * 后面的 Render 全部使用这个 client 坐标。
+             * Target Client (0,0)
+             * 在屏幕上的实际坐标。
              */
-            POINT mouseClient =
-                _mouseScreenPosition;
+            POINT clientOrigin =
+                new POINT(
+                    0,
+                    0);
 
-            if (!ScreenToClient(
+            if (!ClientToScreen(
                     _targetForm.Handle,
-                    ref mouseClient))
+                    ref clientOrigin))
             {
                 return;
             }
@@ -536,10 +661,12 @@ namespace TANGERINE_ZIP.Tools.LightTool
             }
 
             int clientWidth =
-                rc.Right - rc.Left;
+                rc.Right -
+                rc.Left;
 
             int clientHeight =
-                rc.Bottom - rc.Top;
+                rc.Bottom -
+                rc.Top;
 
             if (clientWidth <= 0 ||
                 clientHeight <= 0)
@@ -547,11 +674,31 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
             }
 
+            /*
+             * =====================================================
+             * 不再使用 ScreenToClient。
+             *
+             * 两个值都是 SCREEN 坐标：
+             *
+             * mouseScreen
+             * clientOrigin
+             *
+             * 相减得到 Client 坐标。
+             * =====================================================
+             */
+            int mouseClientX =
+                mouseScreen.X -
+                clientOrigin.X;
+
+            int mouseClientY =
+                mouseScreen.Y -
+                clientOrigin.Y;
+
             bool inside =
-                mouseClient.X >= 0 &&
-                mouseClient.Y >= 0 &&
-                mouseClient.X < clientWidth &&
-                mouseClient.Y < clientHeight;
+                mouseClientX >= 0 &&
+                mouseClientY >= 0 &&
+                mouseClientX < clientWidth &&
+                mouseClientY < clientHeight;
 
             if (!inside)
             {
@@ -576,17 +723,16 @@ namespace TANGERINE_ZIP.Tools.LightTool
             _frameStopwatch.Restart();
 
             if (!Visible)
+            {
                 Show(_targetForm);
+            }
 
-            /*
-             * 这里故意不再进行 PredictMouseClient。
-             *
-             * 光效必须使用“本次捕获对应的鼠标位置”。
-             * 否则动态控件移动时，预测坐标和 WM_PRINT 捕获帧
-             * 不属于同一个时间点，会形成额外的空间偏移。
-             */
             Render(
-                mouseClient,
+                new POINT(
+                    mouseClientX,
+                    mouseClientY),
+                mouseScreen,
+                clientOrigin,
                 clientWidth,
                 clientHeight);
         }
@@ -598,12 +744,18 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private void CreateNativeResources()
         {
             if (_sourceDc == IntPtr.Zero)
+            {
                 _sourceDc =
-                    CreateCompatibleDC(IntPtr.Zero);
+                    CreateCompatibleDC(
+                        IntPtr.Zero);
+            }
 
             if (_outputDc == IntPtr.Zero)
+            {
                 _outputDc =
-                    CreateCompatibleDC(IntPtr.Zero);
+                    CreateCompatibleDC(
+                        IntPtr.Zero);
+            }
 
             EnsureOutputDib();
         }
@@ -611,7 +763,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private int GetOutputBufferSize()
         {
             int radius =
-                (int)Math.Ceiling(_radius);
+                (int)Math.Ceiling(
+                    _radius);
 
             return radius * 2 + 1;
         }
@@ -625,24 +778,42 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 _outputWidth == size &&
                 _outputHeight == size)
             {
-                EnsureManagedBuffers(size);
+                EnsureOutputBuffer(size);
+
                 return;
             }
 
-            if (!ReplaceDib(
-                    ref _outputBitmap,
-                    ref _outputBits,
-                    _outputDc,
-                    size,
-                    size))
+            ReplaceDib(
+                ref _outputBitmap,
+                ref _outputBits,
+                _outputDc,
+                size,
+                size);
+
+            _outputWidth =
+                size;
+
+            _outputHeight =
+                size;
+
+            EnsureOutputBuffer(size);
+        }
+
+        private void EnsureOutputBuffer(
+            int size)
+        {
+            int required =
+                checked(
+                    size *
+                    size *
+                    4);
+
+            if (_outputBuffer.Length <
+                required)
             {
-                return;
+                _outputBuffer =
+                    new byte[required];
             }
-
-            _outputWidth = size;
-            _outputHeight = size;
-
-            EnsureManagedBuffers(size);
         }
 
         private void EnsureSourceDib(
@@ -659,58 +830,59 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 _sourceWidth == width &&
                 _sourceHeight == height)
             {
-                return;
-            }
-
-            if (!ReplaceDib(
-                    ref _sourceBitmap,
-                    ref _sourceBits,
-                    _sourceDc,
+                EnsureSourceBuffers(
                     width,
-                    height))
-            {
+                    height);
+
                 return;
             }
 
-            _sourceWidth = width;
-            _sourceHeight = height;
+            ReplaceDib(
+                ref _sourceBitmap,
+                ref _sourceBits,
+                _sourceDc,
+                width,
+                height);
 
-            int required =
-                checked(width * height * 4);
+            _sourceWidth =
+                width;
 
-            if (_sourceBuffer.Length < required)
-                _sourceBuffer =
-                    new byte[required];
+            _sourceHeight =
+                height;
 
-            if (_lumaBuffer.Length <
-                width * height)
-            {
-                _lumaBuffer =
-                    new float[width * height];
-            }
+            EnsureSourceBuffers(
+                width,
+                height);
         }
 
-        private void EnsureManagedBuffers(int size)
+        private void EnsureSourceBuffers(
+            int width,
+            int height)
         {
             int required =
-                checked(size * size * 4);
+                checked(
+                    width *
+                    height *
+                    4);
 
-            if (_outputBuffer.Length < required)
-                _outputBuffer =
-                    new byte[required];
-
-            if (_sourceBuffer.Length < required)
+            if (_sourceBuffer.Length <
+                required)
+            {
                 _sourceBuffer =
                     new byte[required];
+            }
 
             int lumaRequired =
-                checked(size * size);
+                checked(
+                    width *
+                    height);
 
             if (_lumaBuffer.Length <
                 lumaRequired)
             {
                 _lumaBuffer =
-                    new float[lumaRequired];
+                    new float[
+                        lumaRequired];
             }
         }
 
@@ -721,58 +893,81 @@ namespace TANGERINE_ZIP.Tools.LightTool
             int width,
             int height)
         {
-            if (dc == IntPtr.Zero)
+            if (dc == IntPtr.Zero ||
+                width <= 0 ||
+                height <= 0)
+            {
                 return false;
+            }
 
             BITMAPINFO info =
                 new BITMAPINFO();
 
             info.bmiHeader.biSize =
-                (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
+                (uint)Marshal.SizeOf<
+                    BITMAPINFOHEADER>();
 
             info.bmiHeader.biWidth =
                 width;
 
+            /*
+             * Top-down DIB。
+             *
+             * 第 0 行就是视觉上的第一行。
+             */
             info.bmiHeader.biHeight =
                 -height;
 
-            info.bmiHeader.biPlanes = 1;
-            info.bmiHeader.biBitCount = 32;
-            info.bmiHeader.biCompression = 0;
+            info.bmiHeader.biPlanes =
+                1;
+
+            info.bmiHeader.biBitCount =
+                32;
+
+            info.bmiHeader.biCompression =
+                0;
 
             info.bmiHeader.biSizeImage =
-                (uint)(width * height * 4);
+                (uint)(
+                    width *
+                    height *
+                    4);
 
             IntPtr newBitmap =
                 CreateDIBSection(
                     IntPtr.Zero,
                     ref info,
-                    0,
+                    DIB_RGB_COLORS,
                     out IntPtr newBits,
                     IntPtr.Zero,
                     0);
 
             if (newBitmap == IntPtr.Zero)
+            {
                 return false;
+            }
 
-            /*
-             * 先把新 bitmap 选进 DC。
-             *
-             * 旧 bitmap 可以安全删除。
-             */
             IntPtr oldBitmap =
                 SelectObject(
                     dc,
                     newBitmap);
 
-            if (oldBitmap != IntPtr.Zero &&
-                oldBitmap != newBitmap)
+            /*
+             * 旧 bitmap 必须是我们自己之前创建的 bitmap
+             * 才能删除。
+             */
+            if (bitmap != IntPtr.Zero &&
+                oldBitmap != IntPtr.Zero)
             {
-                DeleteObject(oldBitmap);
+                DeleteObject(
+                    oldBitmap);
             }
 
-            bitmap = newBitmap;
-            bits = newBits;
+            bitmap =
+                newBitmap;
+
+            bits =
+                newBits;
 
             return true;
         }
@@ -780,26 +975,33 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private void RebuildLightLut()
         {
             int radius =
-                (int)Math.Ceiling(_radius);
+                (int)Math.Ceiling(
+                    _radius);
 
-            _lutRadius = radius;
+            _lutRadius =
+                radius;
 
             int radiusSquared =
-                checked(radius * radius);
+                checked(
+                    radius *
+                    radius);
 
             _lightLut =
-                new float[radiusSquared + 1];
+                new float[
+                    radiusSquared + 1];
 
             for (int d2 = 0;
                  d2 <= radiusSquared;
                  d2++)
             {
                 float normalized =
-                    MathF.Sqrt(d2) / _radius;
+                    MathF.Sqrt(d2) /
+                    _radius;
 
                 _lightLut[d2] =
                     SmoothStep(
-                        1f - normalized);
+                        1f -
+                        normalized);
             }
         }
 
@@ -810,7 +1012,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             timeBeginPeriod(1);
 
-            _timerResolutionRaised = true;
+            _timerResolutionRaised =
+                true;
         }
 
         private void LowerTimerResolution()
@@ -820,7 +1023,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             timeEndPeriod(1);
 
-            _timerResolutionRaised = false;
+            _timerResolutionRaised =
+                false;
         }
 
         #endregion
@@ -838,11 +1042,13 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
 
             /*
-             * 这里不重新捕获、不重新计算。
+             * 当前 frame 的 offset 是 Target Client 坐标。
              *
-             * 旧 frame 的坐标是 target client 坐标。
-             * target 移动后，只需要重新求 client (0,0)
-             * 对应的 screen 坐标。
+             * Form 移动以后，只重新取得：
+             *
+             * Target Client (0,0) -> Screen
+             *
+             * 不重新计算鼠标。
              */
             UpdateLayeredWindowImage(
                 _lastOffsetX,
@@ -856,7 +1062,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
             EventArgs e)
         {
             /*
-             * 下一帧自动根据新的 client size 重建 source DIB。
+             * 下一帧重新获取 Client Size。
              */
         }
 
@@ -867,7 +1073,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
             _running = false;
 
             if (!IsDisposed)
+            {
                 Close();
+            }
         }
 
         #endregion
@@ -875,7 +1083,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
         #region Render
 
         private void Render(
-            POINT mouse,
+            POINT mouseClient,
+            POINT mouseScreen,
+            POINT clientOrigin,
             int clientWidth,
             int clientHeight)
         {
@@ -891,39 +1101,45 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
             }
 
-            if (clientWidth > _sourceWidth ||
-                clientHeight > _sourceHeight)
-            {
-                return;
-            }
+            int radius =
+                _lutRadius;
 
-            int radius = _lutRadius;
-
+            /*
+             * 光效区域仍然使用 Client 坐标计算。
+             */
             int left =
                 Math.Max(
                     0,
-                    mouse.X - radius);
+                    mouseClient.X -
+                    radius);
 
             int top =
                 Math.Max(
                     0,
-                    mouse.Y - radius);
+                    mouseClient.Y -
+                    radius);
 
             int right =
                 Math.Min(
                     clientWidth - 1,
-                    mouse.X + radius);
+                    mouseClient.X +
+                    radius);
 
             int bottom =
                 Math.Min(
                     clientHeight - 1,
-                    mouse.Y + radius);
+                    mouseClient.Y +
+                    radius);
 
             int width =
-                right - left + 1;
+                right -
+                left +
+                1;
 
             int height =
-                bottom - top + 1;
+                bottom -
+                top +
+                1;
 
             if (width < 3 ||
                 height < 3)
@@ -939,46 +1155,29 @@ namespace TANGERINE_ZIP.Tools.LightTool
             }
 
             /*
-             * ---------------------------------------------------------
-             * 关键点：
+             * =====================================================
+             * Capture
              *
-             * WM_PRINT 的 source DC 是完整 target client DC。
+             * source DIB：
              *
-             * 不对 source DC 做任何额外 TranslateViewportOrgEx、
-             * SetWindowOrgEx 或屏幕坐标转换。
-             *
-             * 因此：
-             *
-             * source pixel (x,y)
+             * source[0,0]
              * =
-             * target client pixel (x,y)
+             * target client[0,0]
              *
-             * 后面的 left/top 只是从这个完整 client 坐标系中
-             * 截取光效区域。
-             * ---------------------------------------------------------
+             * 所以 source[left,top]
+             * 就是目标区域左上角。
+             * =====================================================
              */
             CaptureTarget();
 
-            int pixelCount =
-                width * height;
-
-            int requiredBytes =
-                pixelCount * 4;
-
             int sourceStride =
-                _sourceWidth * 4;
+                _sourceWidth *
+                4;
 
-            /*
-             * source DIB:
-             *
-             * [0,0] = target client [0,0]
-             *
-             * 所以：
-             *
-             * source[(top+y),(left+x)]
-             * =
-             * target client[(top+y),(left+x)]
-             */
+            int rowBytes =
+                width *
+                4;
+
             for (int row = 0;
                  row < height;
                  row++)
@@ -993,62 +1192,68 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 Marshal.Copy(
                     sourceRow,
                     _sourceBuffer,
-                    row * width * 4,
-                    width * 4);
+                    row * rowBytes,
+                    rowBytes);
             }
 
-            void FillLumaStrip(
-                int yStart,
-                int yEndExclusive)
+            /*
+             * Luma。
+             */
+            for (int y = 0;
+                 y < height;
+                 y++)
             {
-                for (int y = yStart;
-                     y < yEndExclusive;
-                     y++)
+                int sourceRow =
+                    y *
+                    rowBytes;
+
+                int lumaRow =
+                    y *
+                    width;
+
+                for (int x = 0;
+                     x < width;
+                     x++)
                 {
-                    int pixelRow =
-                        y * width;
+                    int p =
+                        sourceRow +
+                        x * 4;
 
-                    int byteRow =
-                        pixelRow * 4;
-
-                    for (int x = 0;
-                         x < width;
-                         x++)
-                    {
-                        int p =
-                            byteRow +
-                            x * 4;
-
-                        _lumaBuffer[
-                            pixelRow + x] =
-                            _sourceBuffer[p + 2] *
-                                0.299f +
-                            _sourceBuffer[p + 1] *
-                                0.587f +
-                            _sourceBuffer[p] *
-                                0.114f;
-                    }
+                    _lumaBuffer[
+                        lumaRow + x] =
+                        _sourceBuffer[p + 2] *
+                            0.299f +
+                        _sourceBuffer[p + 1] *
+                            0.587f +
+                        _sourceBuffer[p] *
+                            0.114f;
                 }
             }
 
-            RunInStrips(
-                0,
-                height,
-                FillLumaStrip);
+            int outputBytes =
+                width *
+                height *
+                4;
 
             Array.Clear(
                 _outputBuffer,
                 0,
-                requiredBytes);
+                outputBytes);
 
+            /*
+             * 鼠标在当前光效 bitmap 中的位置。
+             */
             int mouseX =
-                mouse.X - left;
+                mouseClient.X -
+                left;
 
             int mouseY =
-                mouse.Y - top;
+                mouseClient.Y -
+                top;
 
             int radiusSquared =
-                radius * radius;
+                radius *
+                radius;
 
             byte colorB =
                 _lightColor.B;
@@ -1060,160 +1265,176 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 _lightColor.R;
 
             bool useEdges =
-                _edgeStrength > 0.0001f;
+                _edgeStrength >
+                0.0001f;
 
-            float edgeWidthFactor = 1f;
+            float edgeWidthFactor =
+                1f;
 
             if (_edgeWidth > 1f)
             {
                 edgeWidthFactor =
                     Math.Clamp(
-                        1f / _edgeWidth + 0.5f,
+                        1f /
+                            _edgeWidth +
+                        0.5f,
                         0.5f,
                         1f);
             }
 
-            void RenderRowStrip(
-                int yStart,
-                int yEndExclusive)
+            /*
+             * 单线程处理。
+             *
+             * 对半径 180 的区域，
+             * Parallel.For 的调度开销没有必要。
+             */
+            for (int y = 1;
+                 y < height - 1;
+                 y++)
             {
-                for (int y = yStart;
-                     y < yEndExclusive;
-                     y++)
+                int dy =
+                    y -
+                    mouseY;
+
+                int dySquared =
+                    dy *
+                    dy;
+
+                if (dySquared >
+                    radiusSquared)
                 {
-                    int dy =
-                        y - mouseY;
+                    continue;
+                }
 
-                    int dySquared =
-                        dy * dy;
+                int span =
+                    (int)MathF.Sqrt(
+                        radiusSquared -
+                        dySquared);
 
-                    if (dySquared >
+                int startX =
+                    Math.Max(
+                        1,
+                        mouseX -
+                        span);
+
+                int endX =
+                    Math.Min(
+                        width - 2,
+                        mouseX +
+                        span);
+
+                int rowBase =
+                    y *
+                    width;
+
+                for (int x = startX;
+                     x <= endX;
+                     x++)
+                {
+                    int dx =
+                        x -
+                        mouseX;
+
+                    int distanceSquared =
+                        dx *
+                            dx +
+                        dySquared;
+
+                    if (distanceSquared >
                         radiusSquared)
                     {
                         continue;
                     }
 
-                    int span =
-                        (int)MathF.Sqrt(
-                            radiusSquared -
-                            dySquared);
+                    float light =
+                        _lightLut[
+                            distanceSquared];
 
-                    int startX =
-                        Math.Max(
-                            1,
-                            mouseX - span);
-
-                    int endX =
-                        Math.Min(
-                            width - 2,
-                            mouseX + span);
-
-                    int rowBase =
-                        y * width;
-
-                    for (int x = startX;
-                         x <= endX;
-                         x++)
+                    if (light <=
+                        0.0001f)
                     {
-                        int dx =
-                            x - mouseX;
-
-                        int distanceSquared =
-                            dx * dx +
-                            dySquared;
-
-                        if (distanceSquared >
-                            radiusSquared)
-                        {
-                            continue;
-                        }
-
-                        float light =
-                            _lightLut[
-                                distanceSquared];
-
-                        if (light <= 0.0001f)
-                            continue;
-
-                        float alpha = 0f;
-
-                        if (_isMouseLight)
-                        {
-                            alpha =
-                                light *
-                                _lightStrength;
-                        }
-
-                        if (useEdges)
-                        {
-                            int index =
-                                rowBase + x;
-
-                            float edge =
-                                CalculateSobelEdge(
-                                    _lumaBuffer,
-                                    width,
-                                    index);
-
-                            if (edge > 0f)
-                            {
-                                float edgeAlpha =
-                                    edge *
-                                    _edgeStrength *
-                                    light;
-
-                                edgeAlpha *=
-                                    edgeWidthFactor;
-
-                                alpha += edgeAlpha;
-                            }
-                        }
-
-                        if (alpha <= 0.001f)
-                            continue;
-
-                        if (alpha > 1f)
-                            alpha = 1f;
-
-                        int outputIndex =
-                            (rowBase + x) * 4;
-
-                        /*
-                         * Premultiplied alpha.
-                         */
-                        _outputBuffer[
-                            outputIndex] =
-                            (byte)(
-                                colorB *
-                                alpha);
-
-                        _outputBuffer[
-                            outputIndex + 1] =
-                            (byte)(
-                                colorG *
-                                alpha);
-
-                        _outputBuffer[
-                            outputIndex + 2] =
-                            (byte)(
-                                colorR *
-                                alpha);
-
-                        _outputBuffer[
-                            outputIndex + 3] =
-                            (byte)(
-                                alpha * 255f);
+                        continue;
                     }
+
+                    float alpha =
+                        0f;
+
+                    if (_isMouseLight)
+                    {
+                        alpha =
+                            light *
+                            _lightStrength;
+                    }
+
+                    if (useEdges)
+                    {
+                        int index =
+                            rowBase +
+                            x;
+
+                        float edge =
+                            CalculateSobelEdge(
+                                _lumaBuffer,
+                                width,
+                                index);
+
+                        if (edge > 0f)
+                        {
+                            alpha +=
+                                edge *
+                                _edgeStrength *
+                                light *
+                                edgeWidthFactor;
+                        }
+                    }
+
+                    if (alpha <=
+                        0.001f)
+                    {
+                        continue;
+                    }
+
+                    if (alpha > 1f)
+                    {
+                        alpha = 1f;
+                    }
+
+                    int outputIndex =
+                        (rowBase + x) *
+                        4;
+
+                    _outputBuffer[
+                        outputIndex] =
+                        (byte)(
+                            colorB *
+                            alpha);
+
+                    _outputBuffer[
+                        outputIndex + 1] =
+                        (byte)(
+                            colorG *
+                            alpha);
+
+                    _outputBuffer[
+                        outputIndex + 2] =
+                        (byte)(
+                            colorR *
+                            alpha);
+
+                    _outputBuffer[
+                        outputIndex + 3] =
+                        (byte)(
+                            alpha *
+                            255f);
                 }
             }
 
-            RunInStrips(
-                1,
-                height - 1,
-                RenderRowStrip);
-
+            /*
+             * 写入 Output DIB。
+             */
             int outputStride =
-                _outputWidth * 4;
+                _outputWidth *
+                4;
 
             for (int row = 0;
                  row < height;
@@ -1222,88 +1443,103 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 IntPtr destinationRow =
                     IntPtr.Add(
                         _outputBits,
-                        row * outputStride);
+                        row *
+                        outputStride);
 
                 Marshal.Copy(
                     _outputBuffer,
-                    row * width * 4,
+                    row * rowBytes,
                     destinationRow,
-                    width * 4);
+                    rowBytes);
             }
 
             /*
-             * 这里保存的是 target CLIENT 坐标。
-             *
-             * 不是 screen 坐标。
-             * 不是 overlay 坐标。
+             * 保存 Client 坐标。
              */
-            _lastOffsetX = left;
-            _lastOffsetY = top;
+            _lastOffsetX =
+                left;
 
-            _lastWidth = width;
-            _lastHeight = height;
+            _lastOffsetY =
+                top;
 
-            _hasValidFrame = true;
+            _lastWidth =
+                width;
 
-            UpdateLayeredWindowImage(
-                left,
-                top,
-                width,
-                height);
-        }
+            _lastHeight =
+                height;
 
-        private void RunInStrips(
-            int begin,
-            int endExclusive,
-            Action<int, int> stripAction)
-        {
-            int rowCount =
-                endExclusive - begin;
+            _hasValidFrame =
+                true;
 
-            if (rowCount <= 0)
-                return;
+            /*
+             * =====================================================
+             * 最终屏幕坐标。
+             *
+             * clientOrigin 已经是 SCREEN 坐标。
+             *
+             * 所以：
+             *
+             * overlayScreen =
+             *     clientOrigin +
+             *     clientOffset
+             *
+             * 完全没有 ScreenToClient / ClientToScreen 往返。
+             * =====================================================
+             */
+            int screenLeft =
+                clientOrigin.X +
+                left;
 
-            int strips =
-                Math.Min(
-                    _processorCount,
-                    Math.Max(
-                        1,
-                        rowCount / 16));
+            int screenTop =
+                clientOrigin.Y +
+                top;
 
-            if (strips <= 1)
+            /*
+             * 这里专门做一次数学验证。
+             *
+             * 如果 mouseScreen 和
+             * clientOrigin + mouseClient
+             * 不一致，说明系统 DPI/坐标虚拟化
+             * 本身就在制造误差。
+             */
+            int roundTripX =
+                clientOrigin.X +
+                mouseClient.X;
+
+            int roundTripY =
+                clientOrigin.Y +
+                mouseClient.Y;
+
+            int errorX =
+                roundTripX -
+                mouseScreen.X;
+
+            int errorY =
+                roundTripY -
+                mouseScreen.Y;
+
+            if (errorX != 0 ||
+                errorY != 0)
             {
-                stripAction(
-                    begin,
-                    endExclusive);
-
-                return;
+                Debug.WriteLine(
+                    $"TangerineLight coordinate error: " +
+                    $"MouseScreen=({mouseScreen.X}," +
+                    $"{mouseScreen.Y}) " +
+                    $"ClientOrigin=({clientOrigin.X}," +
+                    $"{clientOrigin.Y}) " +
+                    $"MouseClient=({mouseClient.X}," +
+                    $"{mouseClient.Y}) " +
+                    $"RoundTrip=({roundTripX}," +
+                    $"{roundTripY}) " +
+                    $"Error=({errorX}," +
+                    $"{errorY})");
             }
 
-            int rowsPerStrip =
-                (rowCount + strips - 1) /
-                strips;
-
-            Parallel.For(
-                0,
-                strips,
-                strip =>
-                {
-                    int start =
-                        begin +
-                        strip * rowsPerStrip;
-
-                    int end =
-                        Math.Min(
-                            endExclusive,
-                            start + rowsPerStrip);
-
-                    if (start < end)
-                    {
-                        stripAction(
-                            start,
-                            end);
-                    }
-                });
+            UpdateLayeredWindowImage(
+                screenLeft,
+                screenTop,
+                width,
+                height);
         }
 
         #endregion
@@ -1313,20 +1549,16 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private void CaptureTarget()
         {
             /*
-             * 直接让 targetForm 将当前 client 内容绘制到 source DC。
+             * source DC 的坐标原点固定为：
              *
-             * 这里绝对不调用：
+             * Target Client (0,0)
              *
-             * RedrawWindow
-             * Invalidate
-             * Update
-             * Refresh
+             * 不设置：
              *
-             * 否则动态 ListBox / 自绘控件可能出现闪烁。
+             * SetWindowOrgEx
+             * SetViewportOrgEx
              *
-             * WM_PRINT 是同步调用：
-             * SendMessage 返回以后，source DIB 才被认为是本帧
-             * 可以使用的数据。
+             * 不进行任何坐标平移。
              */
             SendMessage(
                 _targetForm.Handle,
@@ -1378,11 +1610,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 gx * gx +
                 gy * gy;
 
-            const float threshold = 0.10f;
-            const float thresholdSquared = 10404f;
-
             if (magnitudeSquared <=
-                thresholdSquared)
+                0f)
             {
                 return 0f;
             }
@@ -1391,12 +1620,27 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 MathF.Sqrt(
                     magnitudeSquared);
 
-            float edge =
-                magnitude / 1020f;
+            const float maxMagnitude =
+                1020f;
 
-            edge =
-                (edge - threshold) /
-                (1f - threshold);
+            const float threshold =
+                0.10f;
+
+            float normalized =
+                magnitude /
+                maxMagnitude;
+
+            if (normalized <=
+                threshold)
+            {
+                return 0f;
+            }
+
+            float edge =
+                (normalized -
+                    threshold) /
+                (1f -
+                    threshold);
 
             edge *= edge;
 
@@ -1422,7 +1666,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
             return
                 value *
                 value *
-                (3f - 2f * value);
+                (3f -
+                 2f *
+                 value);
         }
 
         #endregion
@@ -1434,39 +1680,65 @@ namespace TANGERINE_ZIP.Tools.LightTool
             if (!IsHandleCreated)
                 return;
 
-            if (_outputBits == IntPtr.Zero ||
-                _outputBuffer.Length < 4)
+            if (_outputBits == IntPtr.Zero)
+                return;
+
+            /*
+             * 只显示 1x1 的完全透明像素。
+             */
+            Marshal.WriteInt32(
+                _outputBits,
+                0);
+
+            _hasValidFrame =
+                false;
+
+            /*
+             * Clear 时直接使用当前 Target Client
+             * 左上角的屏幕坐标。
+             */
+            POINT origin =
+                new POINT(
+                    0,
+                    0);
+
+            if (!ClientToScreen(
+                    _targetForm.Handle,
+                    ref origin))
             {
                 return;
             }
 
-            _outputBuffer[0] = 0;
-            _outputBuffer[1] = 0;
-            _outputBuffer[2] = 0;
-            _outputBuffer[3] = 0;
-
-            Marshal.Copy(
-                _outputBuffer,
-                0,
-                _outputBits,
-                4);
-
-            _hasValidFrame = false;
-
-            UpdateLayeredWindowImage(
-                0,
-                0,
+            UpdateLayeredWindowScreen(
+                origin.X,
+                origin.Y,
                 1,
                 1);
         }
 
         private void UpdateLayeredWindowImage(
-            int offsetX,
-            int offsetY,
+            int screenX,
+            int screenY,
+            int width,
+            int height)
+        {
+            UpdateLayeredWindowScreen(
+                screenX,
+                screenY,
+                width,
+                height);
+        }
+
+        private void UpdateLayeredWindowScreen(
+            int screenX,
+            int screenY,
             int width,
             int height)
         {
             if (!IsHandleCreated)
+                return;
+
+            if (_targetForm.IsDisposed)
                 return;
 
             if (_outputDc == IntPtr.Zero ||
@@ -1475,33 +1747,15 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
             }
 
-            /*
-             * 每次更新时重新获取 target client (0,0)
-             * 的屏幕坐标。
-             *
-             * 这样 targetForm 移动以后不会继续使用旧的
-             * screen 坐标。
-             */
-            POINT targetClientOrigin =
-                new POINT(0, 0);
-
-            if (!ClientToScreen(
-                    _targetForm.Handle,
-                    ref targetClientOrigin))
-            {
-                return;
-            }
-
             POINT destination =
                 new POINT(
-                    targetClientOrigin.X +
-                    offsetX,
-
-                    targetClientOrigin.Y +
-                    offsetY);
+                    screenX,
+                    screenY);
 
             POINT source =
-                new POINT(0, 0);
+                new POINT(
+                    0,
+                    0);
 
             SIZE size =
                 new SIZE(
@@ -1514,32 +1768,43 @@ namespace TANGERINE_ZIP.Tools.LightTool
                     BlendOp =
                         AC_SRC_OVER,
 
-                    BlendFlags = 0,
+                    BlendFlags =
+                        0,
 
-                    SourceConstantAlpha = 255,
+                    SourceConstantAlpha =
+                        255,
 
                     AlphaFormat =
                         AC_SRC_ALPHA
                 };
 
             IntPtr screenDc =
-                GetDC(IntPtr.Zero);
+                GetDC(
+                    IntPtr.Zero);
 
             if (screenDc == IntPtr.Zero)
                 return;
 
             try
             {
-                UpdateLayeredWindow(
-                    Handle,
-                    screenDc,
-                    ref destination,
-                    ref size,
-                    _outputDc,
-                    ref source,
-                    0,
-                    ref blend,
-                    ULW_ALPHA);
+                bool success =
+                    UpdateLayeredWindow(
+                        Handle,
+                        screenDc,
+                        ref destination,
+                        ref size,
+                        _outputDc,
+                        ref source,
+                        0,
+                        ref blend,
+                        ULW_ALPHA);
+
+                if (!success)
+                {
+                    Debug.WriteLine(
+                        "UpdateLayeredWindow failed: " +
+                        Marshal.GetLastWin32Error());
+                }
             }
             finally
             {
@@ -1551,26 +1816,30 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         #endregion
 
-        #region Start Stop
+        #region Start / Stop
 
         public void Start()
         {
             if (IsDisposed)
                 return;
 
-            _running = true;
+            _running =
+                true;
 
             RaiseTimerResolution();
 
             _frameStopwatch.Restart();
 
             if (!Visible)
+            {
                 Show(_targetForm);
+            }
         }
 
         public void Stop()
         {
-            _running = false;
+            _running =
+                false;
 
             LowerTimerResolution();
 
@@ -1586,7 +1855,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
         {
             if (disposing)
             {
-                _running = false;
+                _running =
+                    false;
 
                 _renderDriver.Dispose();
 
@@ -1602,17 +1872,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 LowerTimerResolution();
 
                 /*
-                 * 这里必须先把 bitmap 从 DC 中换出去，
-                 * 再删除 bitmap。
-                 *
-                 * 原来的代码：
-                 *
-                 * DeleteDC()
-                 * DeleteObject(bitmap)
-                 *
-                 * 这个资源释放顺序是不严谨的。
+                 * 先把 bitmap 从 DC 中移除。
                  */
-
                 if (_sourceDc != IntPtr.Zero &&
                     _sourceBitmap != IntPtr.Zero)
                 {
