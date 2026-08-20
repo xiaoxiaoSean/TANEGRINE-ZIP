@@ -18,7 +18,29 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private bool _mouseInside;
 
         #region Properties
+        [Category("Tangerine Light")]
+        [Description("边缘光描边厚度")]
+        [DefaultValue(3)]
+        public int EdgeThickness
+        {
+            get => _edgeThickness;
+            set
+            {
+                int newValue = Math.Clamp(value, 1, 50);
 
+                if (_edgeThickness == newValue)
+                    return;
+
+                _edgeThickness = newValue;
+
+                if (_image != null)
+                    GenerateMasks();
+
+                Invalidate();
+            }
+        }
+
+        private int _edgeThickness = 3;
         [Category("Tangerine Light")]
         [Description("鼠标光照影响半径")]
         [DefaultValue(180f)]
@@ -462,8 +484,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
             if (_image == null)
                 return;
 
-            if (Width <= 0 ||
-                Height <= 0)
+            if (Width <= 0 || Height <= 0)
                 return;
 
             using Bitmap resized =
@@ -473,12 +494,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
                     PixelFormat.Format32bppArgb
                 );
 
-            using (Graphics g =
-                   Graphics.FromImage(resized))
+            using (Graphics g = Graphics.FromImage(resized))
             {
-                g.Clear(
-                    Color.Transparent
-                );
+                g.Clear(Color.Transparent);
 
                 g.InterpolationMode =
                     InterpolationMode.HighQualityBicubic;
@@ -542,26 +560,18 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             try
             {
-                int sourceStride =
-                    sourceData.Stride;
-
-                int alphaStride =
-                    alphaData.Stride;
-
-                int edgeStride =
-                    edgeData.Stride;
+                int sourceStride = sourceData.Stride;
+                int alphaStride = alphaData.Stride;
+                int edgeStride = edgeData.Stride;
 
                 int sourceLength =
-                    Math.Abs(sourceStride) *
-                    Height;
+                    Math.Abs(sourceStride) * Height;
 
                 int alphaLength =
-                    Math.Abs(alphaStride) *
-                    Height;
+                    Math.Abs(alphaStride) * Height;
 
                 int edgeLength =
-                    Math.Abs(edgeStride) *
-                    Height;
+                    Math.Abs(edgeStride) * Height;
 
                 byte[] source =
                     new byte[sourceLength];
@@ -580,9 +590,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 );
 
                 /*
-                 * 先保存完整 Alpha。
+                 * 保存 Alpha
                  */
-
                 for (int y = 0; y < Height; y++)
                 {
                     for (int x = 0; x < Width; x++)
@@ -594,126 +603,271 @@ namespace TANGERINE_ZIP.Tools.LightTool
                         byte alpha =
                             source[index + 3];
 
-                        alphaBuffer[index + 3] =
-                            alpha;
+                        alphaBuffer[
+                            y * alphaStride +
+                            x * 4 +
+                            3
+                        ] = alpha;
                     }
                 }
 
                 /*
-                 * 提取轮廓。
-                 *
-                 * 不再要求邻居必须 == 0。
-                 *
-                 * 只要邻居明显比当前像素透明，
-                 * 就认为接近边缘。
-                 *
-                 * 这样可以正确处理 PNG 抗锯齿。
+                 * 找到真正的边界像素
                  */
+                bool[] boundary =
+                    new bool[Width * Height];
 
                 for (int y = 0; y < Height; y++)
                 {
                     for (int x = 0; x < Width; x++)
                     {
-                        int index =
+                        int sourceIndex =
                             y * sourceStride +
                             x * 4;
 
                         byte current =
-                            source[index + 3];
+                            source[sourceIndex + 3];
 
                         if (current < 10)
                             continue;
 
-                        byte minNeighbor =
-                            255;
+                        bool isBoundary = false;
 
                         // 左
-                        if (x > 0)
+                        if (x == 0)
                         {
-                            int i =
-                                y * sourceStride +
-                                (x - 1) * 4;
-
-                            minNeighbor =
-                                Math.Min(
-                                    minNeighbor,
-                                    source[i + 3]
-                                );
+                            isBoundary = true;
                         }
                         else
                         {
-                            minNeighbor = 0;
+                            byte neighbor =
+                                source[
+                                    y * sourceStride +
+                                    (x - 1) * 4 +
+                                    3
+                                ];
+
+                            if (current - neighbor > 30)
+                                isBoundary = true;
                         }
 
                         // 右
-                        if (x < Width - 1)
+                        if (!isBoundary)
                         {
-                            int i =
-                                y * sourceStride +
-                                (x + 1) * 4;
+                            if (x == Width - 1)
+                            {
+                                isBoundary = true;
+                            }
+                            else
+                            {
+                                byte neighbor =
+                                    source[
+                                        y * sourceStride +
+                                        (x + 1) * 4 +
+                                        3
+                                    ];
 
-                            minNeighbor =
-                                Math.Min(
-                                    minNeighbor,
-                                    source[i + 3]
-                                );
-                        }
-                        else
-                        {
-                            minNeighbor = 0;
+                                if (current - neighbor > 30)
+                                    isBoundary = true;
+                            }
                         }
 
                         // 上
-                        if (y > 0)
+                        if (!isBoundary)
                         {
-                            int i =
-                                (y - 1) *
-                                sourceStride +
-                                x * 4;
+                            if (y == 0)
+                            {
+                                isBoundary = true;
+                            }
+                            else
+                            {
+                                byte neighbor =
+                                    source[
+                                        (y - 1) * sourceStride +
+                                        x * 4 +
+                                        3
+                                    ];
 
-                            minNeighbor =
-                                Math.Min(
-                                    minNeighbor,
-                                    source[i + 3]
-                                );
-                        }
-                        else
-                        {
-                            minNeighbor = 0;
+                                if (current - neighbor > 30)
+                                    isBoundary = true;
+                            }
                         }
 
                         // 下
-                        if (y < Height - 1)
+                        if (!isBoundary)
                         {
-                            int i =
-                                (y + 1) *
-                                sourceStride +
-                                x * 4;
+                            if (y == Height - 1)
+                            {
+                                isBoundary = true;
+                            }
+                            else
+                            {
+                                byte neighbor =
+                                    source[
+                                        (y + 1) * sourceStride +
+                                        x * 4 +
+                                        3
+                                    ];
 
-                            minNeighbor =
-                                Math.Min(
-                                    minNeighbor,
-                                    source[i + 3]
-                                );
+                                if (current - neighbor > 30)
+                                    isBoundary = true;
+                            }
                         }
-                        else
+
+                        if (isBoundary)
                         {
-                            minNeighbor = 0;
+                            boundary[
+                                y * Width + x
+                            ] = true;
                         }
+                    }
+                }
 
-                        int difference =
-                            current -
-                            minNeighbor;
+                /*
+                 * 从边界向外扩张 EdgeThickness。
+                 *
+                 * 使用圆形范围，而不是正方形，
+                 * 这样描边不会出现明显的方形边角。
+                 */
+                int thickness =
+                    Math.Clamp(
+                        EdgeThickness,
+                        1,
+                        50
+                    );
 
-                        if (difference > 30)
+                int radiusSquared =
+                    thickness * thickness;
+
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        bool found = false;
+
+                        int minY =
+                            Math.Max(
+                                0,
+                                y - thickness
+                            );
+
+                        int maxY =
+                            Math.Min(
+                                Height - 1,
+                                y + thickness
+                            );
+
+                        int minX =
+                            Math.Max(
+                                0,
+                                x - thickness
+                            );
+
+                        int maxX =
+                            Math.Min(
+                                Width - 1,
+                                x + thickness
+                            );
+
+                        for (int yy = minY;
+                             yy <= maxY && !found;
+                             yy++)
                         {
-                            edgeBuffer[index + 3] =
-                                (byte)
-                                Math.Min(
-                                    255,
-                                    difference * 4
-                                );
+                            int dy =
+                                yy - y;
+
+                            for (int xx = minX;
+                                 xx <= maxX;
+                                 xx++)
+                            {
+                                int dx =
+                                    xx - x;
+
+                                if (dx * dx + dy * dy >
+                                    radiusSquared)
+                                    continue;
+
+                                if (boundary[
+                                    yy * Width + xx
+                                ])
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
                         }
+
+                        if (!found)
+                            continue;
+
+                        int index =
+                            y * edgeStride +
+                            x * 4;
+
+                        /*
+                         * 根据距离中心边缘的远近，
+                         * 让描边边缘逐渐变淡。
+                         */
+                        float nearestDistance =
+                            thickness;
+
+                        for (int yy = minY;
+                             yy <= maxY;
+                             yy++)
+                        {
+                            int dy =
+                                yy - y;
+
+                            for (int xx = minX;
+                                 xx <= maxX;
+                                 xx++)
+                            {
+                                int dx =
+                                    xx - x;
+
+                                int distanceSquared =
+                                    dx * dx +
+                                    dy * dy;
+
+                                if (distanceSquared >
+                                    radiusSquared)
+                                    continue;
+
+                                if (!boundary[
+                                    yy * Width + xx
+                                ])
+                                    continue;
+
+                                float distance =
+                                    MathF.Sqrt(
+                                        distanceSquared
+                                    );
+
+                                if (distance <
+                                    nearestDistance)
+                                {
+                                    nearestDistance =
+                                        distance;
+                                }
+                            }
+                        }
+
+                        float edgeStrength =
+                            1f -
+                            nearestDistance /
+                            thickness;
+
+                        edgeStrength =
+                            Math.Clamp(
+                                edgeStrength,
+                                0f,
+                                1f
+                            );
+
+                        edgeBuffer[index + 3] =
+                            (byte)(
+                                edgeStrength * 255f
+                            );
                     }
                 }
 

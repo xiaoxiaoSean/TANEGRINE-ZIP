@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace TANGERINE_ZIP
+namespace TANGERINE_ZIP.Tools.TControls1
 {
     internal sealed class FlickerFreeListBox : ListBox
     {

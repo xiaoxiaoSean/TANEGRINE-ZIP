@@ -1,4 +1,6 @@
-﻿namespace TANGERINE_ZIP
+﻿using TANGERINE_ZIP.Tools.TControls1;
+using TANGERINE_ZIP.Resources;
+namespace TANGERINE_ZIP
 {
     partial class OverWriteOrNotForm
     {

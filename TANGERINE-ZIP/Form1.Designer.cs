@@ -1,4 +1,6 @@
-﻿namespace TANGERINE_ZIP
+﻿using TANGERINE_ZIP.Tools.TControls1;
+
+namespace TANGERINE_ZIP
 {
     partial class Form1
     {
@@ -50,6 +52,7 @@
             mainOpenFileDialog = new OpenFileDialog();
             mainSaveFileDialog = new SaveFileDialog();
             mainFolderBrowserDialog = new FolderBrowserDialog();
+            goToParentDirectoryToolStripMenuItem = new ToolStripMenuItem();
             mainMenu.SuspendLayout();
             mainTabControl.SuspendLayout();
             mainTab.SuspendLayout();
@@ -60,7 +63,7 @@
             // 
             mainMenu.BackColor = Color.Black;
             mainMenu.ImageScalingSize = new Size(24, 24);
-            mainMenu.Items.AddRange(new ToolStripItem[] { TZIPToolStripMenuItem, OpenToolStripMenuItem, extractToolStripMenuItem, compressToolStripMenuItem, SettingsToolStripMenuItem, uninstallFileToolStripMenuItem });
+            mainMenu.Items.AddRange(new ToolStripItem[] { TZIPToolStripMenuItem, OpenToolStripMenuItem, extractToolStripMenuItem, compressToolStripMenuItem, SettingsToolStripMenuItem, uninstallFileToolStripMenuItem, goToParentDirectoryToolStripMenuItem });
             mainMenu.Location = new Point(0, 0);
             mainMenu.Name = "mainMenu";
             mainMenu.Size = new Size(1199, 32);
@@ -153,6 +156,8 @@
             // 
             mainTabControl.Controls.Add(mainTab);
             mainTabControl.Dock = DockStyle.Fill;
+            mainTabControl.DrawMode = TabDrawMode.OwnerDrawFixed;
+            mainTabControl.ForeColor = Color.White;
             mainTabControl.Location = new Point(0, 32);
             mainTabControl.Name = "mainTabControl";
             mainTabControl.SelectedIndex = 0;
@@ -161,14 +166,13 @@
             // 
             // mainTab
             // 
+            mainTab.BackColor = Color.Black;
             mainTab.Controls.Add(fileBox);
+            mainTab.ForeColor = Color.White;
             mainTab.Location = new Point(4, 33);
             mainTab.Name = "mainTab";
             mainTab.Size = new Size(1191, 652);
             mainTab.TabIndex = 0;
-            mainTab.BackColor = Color.Black;
-            mainTab.ForeColor = Color.White;
-            mainTab.UseVisualStyleBackColor = false;
             // 
             // fileBox
             // 
@@ -206,6 +210,14 @@
             // mainOpenFileDialog
             // 
             mainOpenFileDialog.FileName = "openFileDialog1";
+            // 
+            // goToParentDirectoryToolStripMenuItem
+            // 
+            goToParentDirectoryToolStripMenuItem.ForeColor = Color.White;
+            goToParentDirectoryToolStripMenuItem.Name = "goToParentDirectoryToolStripMenuItem";
+            goToParentDirectoryToolStripMenuItem.Size = new Size(218, 28);
+            goToParentDirectoryToolStripMenuItem.Text = "Go to parent directory";
+            goToParentDirectoryToolStripMenuItem.Click += goToParentDirectoryToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -252,5 +264,6 @@
         private ToolStripMenuItem compressSelectFileToolStripMenuItem;
         private SaveFileDialog mainSaveFileDialog;
         private FolderBrowserDialog mainFolderBrowserDialog;
+        private ToolStripMenuItem goToParentDirectoryToolStripMenuItem;
     }
 }

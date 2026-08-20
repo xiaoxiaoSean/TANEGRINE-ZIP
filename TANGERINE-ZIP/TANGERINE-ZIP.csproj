@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="TZIPResource.Designer.cs">
+    <Compile Update="Resources\TZIPResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TZIPResource.resx</DependentUpon>
@@ -31,7 +31,7 @@
     <EmbeddedResource Update="LanguageManager\LanguageResource.zh-CN.resx">
       <Generator></Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="TZIPResource.resx">
+    <EmbeddedResource Update="Resources\TZIPResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TZIPResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>

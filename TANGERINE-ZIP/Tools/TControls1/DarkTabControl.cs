@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace TANGERINE_ZIP
+namespace TANGERINE_ZIP.Tools.TControls1
 {
     internal sealed class DarkTabControl : TabControl
     {
@@ -126,8 +126,7 @@ namespace TANGERINE_ZIP
                 using Graphics graphics =
                     Graphics.FromHwnd(Handle);
 
-                Rectangle display =
-                    GetDisplayRect();
+                Rectangle display = this.DisplayRectangle;
 
                 display.Inflate(1, 1);
 

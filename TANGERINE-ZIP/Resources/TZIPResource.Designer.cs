@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TANGERINE_ZIP {
+namespace TANGERINE_ZIP.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TANGERINE_ZIP {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TANGERINE_ZIP.TZIPResource", typeof(TZIPResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TANGERINE_ZIP.Resources.TZIPResource", typeof(TZIPResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -256,4 +256,13 @@ Stage Code is :
     <value>Detail:
 </value>
   </data>
+  <data name="goToParentDirectoryText" xml:space="preserve">
+    <value>Go to parent directory</value>
+  </data>
+  <data name="AlreadyAtTopDirectoryText" xml:space="preserve">
+    <value>Already at the top-level directory</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
 </root>

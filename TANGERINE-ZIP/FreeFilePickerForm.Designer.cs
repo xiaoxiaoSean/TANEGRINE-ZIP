@@ -1,4 +1,6 @@
-﻿namespace TANGERINE_ZIP
+﻿using TANGERINE_ZIP.Tools.TControls1;
+using TANGERINE_ZIP.Resources;
+namespace TANGERINE_ZIP
 {
     partial class FreeFilePickerForm
     {
@@ -59,7 +61,9 @@
             // 
             // formTipText
             // 
+            formTipText.BackColor = Color.Black;
             formTipText.Dock = DockStyle.Fill;
+            formTipText.ForeColor = Color.White;
             formTipText.Location = new Point(3, 3);
             formTipText.Multiline = true;
             formTipText.Name = "formTipText";
@@ -78,14 +82,16 @@
             // 
             // confirmButton
             // 
+            confirmButton.BackColor = Color.Black;
             confirmButton.Dock = DockStyle.Fill;
             confirmButton.Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 134);
+            confirmButton.ForeColor = Color.White;
             confirmButton.Location = new Point(3, 541);
             confirmButton.Name = "confirmButton";
             confirmButton.Size = new Size(1171, 149);
             confirmButton.TabIndex = 2;
             confirmButton.Text = "Confirm";
-            confirmButton.UseVisualStyleBackColor = true;
+            confirmButton.UseVisualStyleBackColor = false;
             // 
             // logoBox
             // 
@@ -118,8 +124,8 @@
 
         private TableLayoutPanel tableLayoutPanel1;
         private TextBox formTipText;
-        private ListBox fileListBox;
         private Button confirmButton;
         private PictureBox logoBox;
+        private FlickerFreeListBox fileListBox;
     }
 }

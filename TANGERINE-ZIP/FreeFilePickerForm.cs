@@ -34,6 +34,7 @@ namespace TANGERINE_ZIP
             catch (Exception ex)//FFPCF01
             {
                 MessageBox.Show(MessageTipGenerator.GenerateTip("FFPCF01", ex.Message));
+                return;
             }
             try
             {
@@ -42,6 +43,7 @@ namespace TANGERINE_ZIP
             catch (Exception ex)//FFPCF02
             {
                 MessageBox.Show(MessageTipGenerator.GenerateTip("FFPCF02", ex.Message));
+                return;
             }           
             string[] allItems = PathSorter.MergeAndSort(files, folders);
 
@@ -59,7 +61,7 @@ namespace TANGERINE_ZIP
         }
         private void FreeFilePickerForm_Load(object sender, EventArgs e)
         {
-
+            confirmButton.Text=LanguageManager.Get("Confirm");
         }
     }
 }

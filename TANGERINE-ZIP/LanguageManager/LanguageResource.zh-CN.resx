@@ -256,4 +256,13 @@
     <value>详情：
 </value>
   </data>
+  <data name="goToParentDirectoryText" xml:space="preserve">
+    <value>返回至上一级目录</value>
+  </data>
+  <data name="AlreadyAtTopDirectoryText" xml:space="preserve">
+    <value>已经到达顶层目录</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
 </root>

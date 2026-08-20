@@ -25,32 +25,25 @@ namespace TANGERINE_ZIP
         bool isDoingJob = false;
         private void Form1_Load(object sender, EventArgs e)
         {
+            #region set light effect
             _lightOverlay = new TangerineLightOverlay(this);
-
             _lightOverlay.TargetFps = 60;
             _lightOverlay.Radius = 180f;
             _lightOverlay.LightStrength = 0.02f;
-            _lightOverlay.EdgeStrength = 9.9f;
+            _lightOverlay.EdgeStrength = 7.9f;
             _lightOverlay.EdgeWidth = 3f;
             _lightOverlay.disableWhenMouseSpeedGetTooFast = 100000;
-            _normalEdgeStrength =
-                _lightOverlay.EdgeStrength;
-
+            _normalEdgeStrength = _lightOverlay.EdgeStrength;
             _fileBoxScrollTimer =
                 new System.Windows.Forms.Timer
                 {
                     Interval = 120
                 };
-
-            _fileBoxScrollTimer.Tick +=
-                FileBoxScrollTimer_Tick;
-
-            fileBox.ViewChanged +=
-                FileBox_ViewChanged;
-
+            _fileBoxScrollTimer.Tick += FileBoxScrollTimer_Tick;
+            fileBox.ViewChanged += FileBox_ViewChanged;
             _lightOverlay.Show(this);
-            //begining of the form load,don't write any code before this line
-            //set text-started
+            #endregion
+            #region set text
             statusLabel.Text = LanguageManager.Get("readytext");
             OpenToolStripMenuItem.Text = LanguageManager.Get("openText");
             extractToolStripMenuItem.Text = LanguageManager.Get("extractText");
@@ -62,13 +55,14 @@ namespace TANGERINE_ZIP
             extractToFolderALLToolStripMenuItem.Text = LanguageManager.Get("extractToFolderALLText");
             extractDirectlySELECTEDToolStripMenuItem.Text = LanguageManager.Get("extractDirectlySELECTEDText");
             extractToAFolderSELECTEDToolStripMenuItem.Text = LanguageManager.Get("extractToAFolderSELECTEDText");
-            //set text-completed
-            //now we need to disable some menus because they are useless when no file opened yet
-            //set the visiblity of some menus -started
+            goToParentDirectoryToolStripMenuItem.Text = LanguageManager.Get("goToParentDirectoryText");
+            #endregion
+            #region set visibility
             uninstallFileToolStripMenuItem.Visible = false;
             extractToolStripMenuItem.Visible = false;
             compressToolStripMenuItem.Visible = false;
-            //set the visiblity of some menus-completed
+            goToParentDirectoryToolStripMenuItem.Visible = false;
+            #endregion
         }
 
         private void FileBox_ViewChanged(
@@ -1260,6 +1254,11 @@ namespace TANGERINE_ZIP
             TZIPForm tZIPForm = new TZIPForm();
             tZIPForm.ShowDialog();
             tZIPForm.Dispose();
+        }
+
+        private void goToParentDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
