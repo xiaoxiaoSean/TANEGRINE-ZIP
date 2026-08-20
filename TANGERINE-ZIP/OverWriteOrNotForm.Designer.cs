@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OverWriteOrNotForm));
             tableLayoutPanel1 = new TableLayoutPanel();
             label1 = new Label();
-            listBox1 = new ListBox();
+            listBox1 = new FlickerFreeListBox();
             pictureBox1 = new PictureBox();
             button1 = new Button();
             tableLayoutPanel1.SuspendLayout();

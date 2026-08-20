@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FreeFilePickerForm));
             tableLayoutPanel1 = new TableLayoutPanel();
             formTipText = new TextBox();
-            fileListBox = new ListBox();
+            fileListBox = new FlickerFreeListBox();
             confirmButton = new Button();
             logoBox = new PictureBox();
             tableLayoutPanel1.SuspendLayout();

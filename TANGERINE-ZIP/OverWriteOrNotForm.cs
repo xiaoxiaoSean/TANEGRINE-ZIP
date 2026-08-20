@@ -22,11 +22,20 @@ namespace TANGERINE_ZIP
             this.Text = LanguageManager.Get("OverWriteOrNot");
             label1.Text = LanguageManager.Get("OverWriteText");
             button1.Text = LanguageManager.Get("Execute");
-            listBox1.Items.Clear();
-            listBox1.Items.Add(LanguageManager.Get("OverWrite1"));
-            listBox1.Items.Add(LanguageManager.Get("OverWrite2"));
-            listBox1.Items.Add(LanguageManager.Get("OverWrite3"));
-            listBox1.Items.Add(LanguageManager.Get("OverWrite4"));
+            listBox1.BeginUpdate();
+
+            try
+            {
+                listBox1.Items.Clear();
+                listBox1.Items.Add(LanguageManager.Get("OverWrite1"));
+                listBox1.Items.Add(LanguageManager.Get("OverWrite2"));
+                listBox1.Items.Add(LanguageManager.Get("OverWrite3"));
+                listBox1.Items.Add(LanguageManager.Get("OverWrite4"));
+            }
+            finally
+            {
+                listBox1.EndUpdate();
+            }
         }
         public void SyncBool(ref bool allOverWrite)
         {

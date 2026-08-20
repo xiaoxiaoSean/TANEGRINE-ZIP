@@ -43,7 +43,7 @@
             uninstallFileToolStripMenuItem = new ToolStripMenuItem();
             mainTabControl = new TabControl();
             mainTab = new TabPage();
-            fileBox = new ListBox();
+            fileBox = new FlickerFreeListBox();
             statusStrip1 = new StatusStrip();
             statusProgressBar = new ToolStripProgressBar();
             statusLabel = new ToolStripStatusLabel();

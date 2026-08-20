@@ -121,25 +121,45 @@ namespace TANGERINE_ZIP
         private async Task LoadArchiveAsync(string zippath)
         {
             isDoingJob = true;
-            fileBox.Items.Clear();
-            await Task.Run(() =>
+            List<string> items =
+                await Task.Run(() =>
             {
+                List<string> result = new();
+
                 using var archive = ArchiveFactory.OpenArchive(zippath);
 
                 foreach (var entry in archive.Entries)
                 {
-                    string text = entry.IsDirectory ? entry.Key + "/" : entry.Key;
-                    Invoke(() =>
-                    {
-                        fileBox.Items.Add(text);
-                    });
+                    result.Add(
+                        entry.IsDirectory
+                            ? entry.Key + "/"
+                            : entry.Key);
                 }
-                Invoke(() =>
-                {
-                    statusLabel.Text = LanguageManager.Get("readytext");
-                    statusProgressBar.Value = 100;
-                });
+
+                return result;
             });
+
+            fileBox.BeginUpdate();
+
+            try
+            {
+                fileBox.Items.Clear();
+                fileBox.Items.AddRange(
+                    items.ConvertAll(
+                        item => (object)item)
+                    .ToArray());
+            }
+            finally
+            {
+                fileBox.EndUpdate();
+            }
+
+            statusLabel.Text =
+                LanguageManager.Get("readytext");
+
+            statusProgressBar.Value =
+                100;
+
             isDoingJob = false;
         }
         private async Task ExtractSelectedEntriesDIRECTLYAsync(string zippath, List<string> selectedEntries, string destinationPath)
@@ -1058,7 +1078,16 @@ namespace TANGERINE_ZIP
             zippath = string.Empty;
             statusLabel.Text = LanguageManager.Get("readytext");
             statusProgressBar.Value = 0;
-            fileBox.Items.Clear();
+            fileBox.BeginUpdate();
+
+            try
+            {
+                fileBox.Items.Clear();
+            }
+            finally
+            {
+                fileBox.EndUpdate();
+            }
             extractToolStripMenuItem.Visible = false;
             compressToolStripMenuItem.Visible = false;
             uninstallFileToolStripMenuItem.Visible = false;

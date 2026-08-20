@@ -25,7 +25,6 @@ namespace TANGERINE_ZIP
         }
         void LoadPath(string inputPath)
         {
-            fileListBox.Items.Clear();
             string[] files = null;
             string[] folders=null;
             try
@@ -45,7 +44,18 @@ namespace TANGERINE_ZIP
                 MessageBox.Show(MessageTipGenerator.GenerateTip("FFPCF02", ex.Message));
             }           
             string[] allItems = PathSorter.MergeAndSort(files, folders);
-            fileListBox.Items.AddRange(allItems);
+
+            fileListBox.BeginUpdate();
+
+            try
+            {
+                fileListBox.Items.Clear();
+                fileListBox.Items.AddRange(allItems);
+            }
+            finally
+            {
+                fileListBox.EndUpdate();
+            }
         }
         private void FreeFilePickerForm_Load(object sender, EventArgs e)
         {
