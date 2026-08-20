@@ -378,6 +378,14 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         private bool _hasValidFrame;
 
+        private bool _captureDirty =
+            true;
+
+        private long _lastCaptureTimestamp;
+
+        private const double CaptureIntervalMilliseconds =
+            100.0;
+
         #endregion
 
         public TangerineLightOverlay(
@@ -412,6 +420,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             _targetForm.Resize +=
                 TargetForm_Resize;
+
+            _targetForm.Invalidated +=
+                TargetForm_Invalidated;
 
             _targetForm.FormClosed +=
                 TargetForm_FormClosed;
@@ -899,6 +910,12 @@ namespace TANGERINE_ZIP.Tools.LightTool
             _sourceHeight =
                 height;
 
+            _captureDirty =
+                true;
+
+            _lastCaptureTimestamp =
+                0;
+
             EnsureSourceBuffers(
                 width,
                 height);
@@ -1138,9 +1155,20 @@ namespace TANGERINE_ZIP.Tools.LightTool
             object? sender,
             EventArgs e)
         {
+            _captureDirty =
+                true;
+
             /*
              * 下一帧会自动重新获取 ClientSize。
              */
+        }
+
+        private void TargetForm_Invalidated(
+            object? sender,
+            InvalidateEventArgs e)
+        {
+            _captureDirty =
+                true;
         }
 
         private void TargetForm_FormClosed(
@@ -1846,6 +1874,23 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
             }
 
+            long now =
+                Stopwatch.GetTimestamp();
+
+            double elapsedMilliseconds =
+                _lastCaptureTimestamp == 0
+                    ? double.MaxValue
+                    : (now - _lastCaptureTimestamp) *
+                      1000.0 /
+                      Stopwatch.Frequency;
+
+            if (!_captureDirty &&
+                elapsedMilliseconds <
+                CaptureIntervalMilliseconds)
+            {
+                return;
+            }
+
             /*
              * 优先让目标窗体把客户区绘制到 source DIB。
              * 这样不需要隐藏 layered window，也不会把上一帧光效
@@ -1857,6 +1902,12 @@ namespace TANGERINE_ZIP.Tools.LightTool
                     _sourceDc,
                     PW_CLIENTONLY))
             {
+                _captureDirty =
+                    false;
+
+                _lastCaptureTimestamp =
+                    now;
+
                 return;
             }
 
@@ -1893,6 +1944,12 @@ namespace TANGERINE_ZIP.Tools.LightTool
                         _sourceWidth,
                         _sourceHeight),
                     CopyPixelOperation.SourceCopy);
+
+                _captureDirty =
+                    false;
+
+                _lastCaptureTimestamp =
+                    now;
             }
             finally
             {
