@@ -103,6 +103,9 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private const int WM_PRINT =
             0x0317;
 
+        private const uint PW_CLIENTONLY =
+            0x00000001;
+
         private const int HTTRANSPARENT =
             -1;
 
@@ -253,6 +256,13 @@ namespace TANGERINE_ZIP.Tools.LightTool
             int msg,
             IntPtr wParam,
             IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool PrintWindow(
+            IntPtr hWnd,
+            IntPtr hdcBlt,
+            uint nFlags);
 
         [DllImport("user32.dll")]
         private static extern bool GetCursorPos(
@@ -1829,11 +1839,30 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         private void CaptureTarget()
         {
+            if (_sourceDc == IntPtr.Zero ||
+                _targetForm.IsDisposed ||
+                !_targetForm.IsHandleCreated)
+            {
+                return;
+            }
+
+            /*
+             * 优先让目标窗体把客户区绘制到 source DIB。
+             * 这样不需要隐藏 layered window，也不会把上一帧光效
+             * 再次采集回来。PW_CLIENTONLY 保证 source [0,0] 与
+             * target client [0,0] 对齐。
+             */
+            if (PrintWindow(
+                    _targetForm.Handle,
+                    _sourceDc,
+                    PW_CLIENTONLY))
+            {
+                return;
+            }
+
             /*
              * Overlay 是独立的 layered window。
-             * 截图时必须先隐藏它，否则下一帧可能把上一帧
-             * 的描边再次采集，Sobel 会对旧描边重复检测，形成
-             * 向右下扩散的反馈环。
+             * 仅在 PrintWindow 不支持目标窗体时才回退到屏幕捕获。
              */
             bool wasVisible =
                 Visible;
