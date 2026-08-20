@@ -38,6 +38,39 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         private bool _isMouseLight = true;
 
+        private bool _effectSuspended;
+
+        private bool _effectAnimating;
+
+        private float _effectOpacity;
+
+        private int _eDelay = 50;
+
+        private int _eAnimationTime = 50;
+
+        private bool _hasMouseSample;
+
+        private POINT _lastMouseScreenPosition;
+
+        private long _effectReadyTimestamp;
+
+        private long _animationStartTimestamp;
+
+        private CancellationTokenSource? _renderCancellation;
+
+        private readonly object _renderCancellationLock =
+            new object();
+
+        private int _renderGeneration;
+
+        private bool _renderBusy;
+
+        private int _lastMouseClientX;
+
+        private int _lastMouseClientY;
+
+        private long _lastMouseTimestamp;
+
         private readonly Stopwatch _frameStopwatch =
             new Stopwatch();
 
@@ -381,11 +414,6 @@ namespace TANGERINE_ZIP.Tools.LightTool
         private bool _captureDirty =
             true;
 
-        private long _lastCaptureTimestamp;
-
-        private const double CaptureIntervalMilliseconds =
-            100.0;
-
         #endregion
 
         public TangerineLightOverlay(
@@ -476,13 +504,53 @@ namespace TANGERINE_ZIP.Tools.LightTool
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
+        public int disableWhenMouseSpeedGetTooFast
+        {
+            get => _disableWhenMouseSpeedGetTooFast;
+
+            set =>
+                _disableWhenMouseSpeedGetTooFast =
+                    Math.Max(
+                        0,
+                        value);
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
+        public int eDelay
+        {
+            get => _eDelay;
+
+            set =>
+                _eDelay =
+                    Math.Max(
+                        0,
+                        value);
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(
+            DesignerSerializationVisibility.Hidden)]
+        public int eAnimationTime
+        {
+            get => _eAnimationTime;
+
+            set =>
+                _eAnimationTime =
+                    Math.Max(
+                        0,
+                        value);
+        }
+
         public void InvalidateCapture()
         {
             _captureDirty =
                 true;
 
-            _lastCaptureTimestamp =
-                0;
         }
 
         [Browsable(false)]
@@ -707,6 +775,13 @@ namespace TANGERINE_ZIP.Tools.LightTool
             _mouseScreenPosition =
                 mouseScreen;
 
+            long stateTimestamp =
+                Stopwatch.GetTimestamp();
+
+            UpdateEffectState(
+                mouseScreen,
+                stateTimestamp);
+
             /*
              * ========================================================
              * 1. Screen -> Client
@@ -762,6 +837,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             if (!inside)
             {
+                ResetMouseSpeed();
+
                 if (_mouseInside)
                 {
                     _mouseInside = false;
@@ -773,6 +850,16 @@ namespace TANGERINE_ZIP.Tools.LightTool
             }
 
             _mouseInside = true;
+
+            if (_effectSuspended)
+            {
+                if (_hasValidFrame)
+                {
+                    ClearOverlay();
+                }
+
+                return;
+            }
 
             if (_frameStopwatch.Elapsed
                     .TotalMilliseconds <
@@ -791,7 +878,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
             Render(
                 mouseClient,
                 clientWidth,
-                clientHeight);
+                clientHeight,
+                _effectOpacity);
         }
 
         #endregion
@@ -922,8 +1010,6 @@ namespace TANGERINE_ZIP.Tools.LightTool
             _captureDirty =
                 true;
 
-            _lastCaptureTimestamp =
-                0;
 
             EnsureSourceBuffers(
                 width,
@@ -1107,6 +1193,196 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             _timerResolutionRaised =
                 true;
+        }
+
+        private void UpdateEffectState(
+            POINT mouseScreen,
+            long now)
+        {
+            bool moved =
+                !_hasMouseSample ||
+                mouseScreen.X !=
+                    _lastMouseScreenPosition.X ||
+                mouseScreen.Y !=
+                    _lastMouseScreenPosition.Y;
+
+            if (!_hasMouseSample)
+            {
+                _effectOpacity =
+                    1f;
+            }
+
+            double speed =
+                0d;
+
+            if (moved &&
+                _hasMouseSample)
+            {
+                double elapsedSeconds =
+                    (now - _lastMouseTimestamp) /
+                    (double)Stopwatch.Frequency;
+
+                int dx =
+                    mouseScreen.X -
+                    _lastMouseScreenPosition.X;
+
+                int dy =
+                    mouseScreen.Y -
+                    _lastMouseScreenPosition.Y;
+
+                double distance =
+                    Math.Sqrt(
+                        (double)dx *
+                        dx +
+                        (double)dy *
+                        dy);
+
+                speed =
+                    elapsedSeconds > 0
+                        ? distance /
+                          elapsedSeconds
+                        : double.PositiveInfinity;
+            }
+
+            bool tooFast =
+                speed >
+                _disableWhenMouseSpeedGetTooFast;
+
+            if (tooFast ||
+                (_effectAnimating && moved))
+            {
+                _effectSuspended =
+                    true;
+
+                _effectAnimating =
+                    false;
+
+                _effectOpacity =
+                    0f;
+
+                _effectReadyTimestamp =
+                    now +
+                    (long)(
+                        Stopwatch.Frequency *
+                        _eDelay /
+                        1000.0);
+
+                CancelPendingRender();
+            }
+            else if (_effectSuspended &&
+                     !moved &&
+                     now >= _effectReadyTimestamp)
+            {
+                _effectSuspended =
+                    false;
+
+                _effectAnimating =
+                    _eAnimationTime > 0;
+
+                _animationStartTimestamp =
+                    now;
+
+                _effectOpacity =
+                    _effectAnimating
+                        ? 0f
+                        : 1f;
+            }
+
+            if (_effectAnimating &&
+                !moved)
+            {
+                double animationElapsed =
+                    (now - _animationStartTimestamp) *
+                    1000.0 /
+                    Stopwatch.Frequency;
+
+                _effectOpacity =
+                    Math.Clamp(
+                        (float)(
+                            animationElapsed /
+                            _eAnimationTime),
+                        0f,
+                        1f);
+
+                if (_effectOpacity >= 1f)
+                {
+                    _effectAnimating =
+                        false;
+                }
+            }
+
+            _lastMouseScreenPosition =
+                mouseScreen;
+
+            _hasMouseSample =
+                true;
+
+            _lastMouseTimestamp =
+                now;
+        }
+
+        private int _disableWhenMouseSpeedGetTooFast =
+            800;
+
+        private void ResetMouseSpeed()
+        {
+            _hasMouseSample =
+                false;
+
+            _lastMouseTimestamp =
+                0;
+
+            _effectSuspended =
+                false;
+
+            _effectAnimating =
+                false;
+
+            _effectOpacity =
+                1f;
+        }
+
+        private void CancelPendingRender()
+        {
+            lock (_renderCancellationLock)
+            {
+                _renderGeneration++;
+
+                if (_renderCancellation == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    _renderCancellation.Cancel();
+                }
+                catch (ObjectDisposedException)
+                {
+                    _renderCancellation =
+                        null;
+                }
+            }
+        }
+
+        private void FinishRender(
+            CancellationTokenSource cancellation)
+        {
+            lock (_renderCancellationLock)
+            {
+                if (ReferenceEquals(
+                        _renderCancellation,
+                        cancellation))
+                {
+                    _renderCancellation =
+                        null;
+                }
+
+                _renderBusy =
+                    false;
+
+                cancellation.Dispose();
+            }
         }
 
         private void LowerTimerResolution()
@@ -1296,11 +1572,32 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
         #region Render
 
-        private void Render(
+        private async void Render(
             POINT mouseClient,
             int clientWidth,
-            int clientHeight)
+            int clientHeight,
+            float opacity)
         {
+            if (_renderBusy)
+            {
+                return;
+            }
+
+            _renderBusy =
+                true;
+
+            CancellationTokenSource cancellation =
+                new CancellationTokenSource();
+
+            _renderCancellation =
+                cancellation;
+
+            int generation =
+                ++_renderGeneration;
+
+            CancellationToken token =
+                cancellation.Token;
+
             EnsureOutputDib();
 
             EnsureSourceDib(
@@ -1312,6 +1609,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 _outputBits ==
                     IntPtr.Zero)
             {
+                FinishRender(
+                    cancellation);
                 return;
             }
 
@@ -1361,12 +1660,16 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 height < 3)
             {
                 ClearOverlay();
+                FinishRender(
+                    cancellation);
                 return;
             }
 
             if (width > _outputWidth ||
                 height > _outputHeight)
             {
+                FinishRender(
+                    cancellation);
                 return;
             }
 
@@ -1425,19 +1728,20 @@ namespace TANGERINE_ZIP.Tools.LightTool
              * Luma
              * ========================================================
              */
-            BuildLuma(
-                width,
-                height);
+            bool useEdges =
+                _edgeStrength >
+                0.0001f;
 
-            int outputBytes =
-                width *
-                height *
-                4;
-
-            Array.Clear(
-                _outputBuffer,
-                0,
-                outputBytes);
+            for (int row = 0;
+                 row < height;
+                 row++)
+            {
+                Array.Clear(
+                    _outputBuffer,
+                    row *
+                    rowBytes,
+                    rowBytes);
+            }
 
             /*
              * mouse 在 output bitmap 中的位置。
@@ -1462,10 +1766,6 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             byte colorR =
                 _lightColor.R;
-
-            bool useEdges =
-                _edgeStrength >
-                0.0001f;
 
             float edgeWidthFactor =
                 1f;
@@ -1501,6 +1801,11 @@ namespace TANGERINE_ZIP.Tools.LightTool
                          y < yEndExclusive;
                          y++)
                     {
+                        if (token.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
                         int dy =
                             y -
                             mouseY;
@@ -1646,10 +1951,38 @@ namespace TANGERINE_ZIP.Tools.LightTool
              *
              * 大区域按块并行。
              */
-            RunInStrips(
-                1,
-                height - 1,
-                RenderRows);
+            try
+            {
+                await Task.Run(
+                    () =>
+                    {
+                        if (useEdges)
+                        {
+                            BuildLuma(
+                                width,
+                                height);
+                        }
+
+                        RunInStrips(
+                            1,
+                            height - 1,
+                            RenderRows);
+                    });
+            }
+            catch (OperationCanceledException)
+            {
+                FinishRender(
+                    cancellation);
+                return;
+            }
+
+            if (token.IsCancellationRequested ||
+                generation != _renderGeneration)
+            {
+                FinishRender(
+                    cancellation);
+                return;
+            }
 
             /*
              * ========================================================
@@ -1703,6 +2036,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
             if (!TryGetClientOriginScreen(
                     out POINT origin))
             {
+                FinishRender(
+                    cancellation);
                 return;
             }
 
@@ -1724,7 +2059,14 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 screenX,
                 screenY,
                 width,
-                height);
+                height,
+                (byte)Math.Clamp(
+                    (int)(opacity * 255f),
+                    0,
+                    255));
+
+            FinishRender(
+                cancellation);
         }
 
         #endregion
@@ -1883,19 +2225,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 return;
             }
 
-            long now =
-                Stopwatch.GetTimestamp();
-
-            double elapsedMilliseconds =
-                _lastCaptureTimestamp == 0
-                    ? double.MaxValue
-                    : (now - _lastCaptureTimestamp) *
-                      1000.0 /
-                      Stopwatch.Frequency;
-
-            if (!_captureDirty &&
-                elapsedMilliseconds <
-                CaptureIntervalMilliseconds)
+            if (!_captureDirty)
             {
                 return;
             }
@@ -1913,9 +2243,6 @@ namespace TANGERINE_ZIP.Tools.LightTool
             {
                 _captureDirty =
                     false;
-
-                _lastCaptureTimestamp =
-                    now;
 
                 return;
             }
@@ -1957,8 +2284,6 @@ namespace TANGERINE_ZIP.Tools.LightTool
                 _captureDirty =
                     false;
 
-                _lastCaptureTimestamp =
-                    now;
             }
             finally
             {
@@ -2185,7 +2510,8 @@ namespace TANGERINE_ZIP.Tools.LightTool
             int screenX,
             int screenY,
             int width,
-            int height)
+            int height,
+            byte sourceAlpha = 255)
         {
             if (!IsHandleCreated)
                 return;
@@ -2232,7 +2558,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
                         0,
 
                     SourceConstantAlpha =
-                        255,
+                        sourceAlpha,
 
                     AlphaFormat =
                         AC_SRC_ALPHA

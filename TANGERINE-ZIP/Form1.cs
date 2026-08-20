@@ -29,10 +29,10 @@ namespace TANGERINE_ZIP
 
             _lightOverlay.TargetFps = 60;
             _lightOverlay.Radius = 180f;
-            _lightOverlay.LightStrength = 0.18f;
+            _lightOverlay.LightStrength = 0.02f;
             _lightOverlay.EdgeStrength = 9.9f;
             _lightOverlay.EdgeWidth = 3f;
-
+            _lightOverlay.disableWhenMouseSpeedGetTooFast = 100000;
             _normalEdgeStrength =
                 _lightOverlay.EdgeStrength;
 
@@ -209,6 +209,16 @@ namespace TANGERINE_ZIP
             {
                 fileBox.EndUpdate();
                 fileBox.ResumeLayout(true);
+            }
+
+            _fileBoxScrollTimer?.Stop();
+
+            if (_lightOverlay != null)
+            {
+                _lightOverlay.EdgeStrength =
+                    _normalEdgeStrength;
+
+                _lightOverlay.InvalidateCapture();
             }
 
             statusLabel.Text =
