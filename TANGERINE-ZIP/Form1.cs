@@ -12,6 +12,11 @@ namespace TANGERINE_ZIP
     public partial class Form1 : Form
     {
         private TangerineLightOverlay? _lightOverlay;
+
+        private System.Windows.Forms.Timer? _fileBoxScrollTimer;
+
+        private float _normalEdgeStrength;
+
         public Form1()
         {
             InitializeComponent();
@@ -27,6 +32,21 @@ namespace TANGERINE_ZIP
             _lightOverlay.LightStrength = 0.18f;
             _lightOverlay.EdgeStrength = 9.9f;
             _lightOverlay.EdgeWidth = 3f;
+
+            _normalEdgeStrength =
+                _lightOverlay.EdgeStrength;
+
+            _fileBoxScrollTimer =
+                new System.Windows.Forms.Timer
+                {
+                    Interval = 120
+                };
+
+            _fileBoxScrollTimer.Tick +=
+                FileBoxScrollTimer_Tick;
+
+            fileBox.ViewChanged +=
+                FileBox_ViewChanged;
 
             _lightOverlay.Show(this);
             //begining of the form load,don't write any code before this line
@@ -49,6 +69,41 @@ namespace TANGERINE_ZIP
             extractToolStripMenuItem.Visible = false;
             compressToolStripMenuItem.Visible = false;
             //set the visiblity of some menus-completed
+        }
+
+        private void FileBox_ViewChanged(
+            object? sender,
+            EventArgs e)
+        {
+            if (_lightOverlay == null ||
+                _fileBoxScrollTimer == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                0f;
+
+            _fileBoxScrollTimer.Stop();
+            _fileBoxScrollTimer.Start();
+            _lightOverlay?.InvalidateCapture();
+        }
+
+        private void FileBoxScrollTimer_Tick(
+            object? sender,
+            EventArgs e)
+        {
+            _fileBoxScrollTimer?.Stop();
+
+            if (_lightOverlay == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                _normalEdgeStrength;
+
+            _lightOverlay.InvalidateCapture();
         }
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -139,6 +194,7 @@ namespace TANGERINE_ZIP
                 return result;
             });
 
+            fileBox.SuspendLayout();
             fileBox.BeginUpdate();
 
             try
@@ -152,6 +208,7 @@ namespace TANGERINE_ZIP
             finally
             {
                 fileBox.EndUpdate();
+                fileBox.ResumeLayout(true);
             }
 
             statusLabel.Text =
@@ -1078,6 +1135,7 @@ namespace TANGERINE_ZIP
             zippath = string.Empty;
             statusLabel.Text = LanguageManager.Get("readytext");
             statusProgressBar.Value = 0;
+            fileBox.SuspendLayout();
             fileBox.BeginUpdate();
 
             try
@@ -1087,6 +1145,7 @@ namespace TANGERINE_ZIP
             finally
             {
                 fileBox.EndUpdate();
+                fileBox.ResumeLayout(true);
             }
             extractToolStripMenuItem.Visible = false;
             compressToolStripMenuItem.Visible = false;

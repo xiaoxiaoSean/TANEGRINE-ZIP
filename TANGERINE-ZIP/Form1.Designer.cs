@@ -236,7 +236,7 @@
         private ToolStripMenuItem SettingsToolStripMenuItem;
         private TabControl mainTabControl;
         private TabPage mainTab;
-        private ListBox fileBox;
+        private FlickerFreeListBox fileBox;
         private ToolStripMenuItem OpenToolStripMenuItem;
         private OpenFileDialog mainOpenFileDialog;
         private StatusStrip statusStrip1;

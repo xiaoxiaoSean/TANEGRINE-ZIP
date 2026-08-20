@@ -476,6 +476,15 @@ namespace TANGERINE_ZIP.Tools.LightTool
             }
         }
 
+        public void InvalidateCapture()
+        {
+            _captureDirty =
+                true;
+
+            _lastCaptureTimestamp =
+                0;
+        }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(
             DesignerSerializationVisibility.Hidden)]
