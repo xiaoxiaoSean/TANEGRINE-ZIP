@@ -41,7 +41,7 @@
             compressSelectFileToolStripMenuItem = new ToolStripMenuItem();
             SettingsToolStripMenuItem = new ToolStripMenuItem();
             uninstallFileToolStripMenuItem = new ToolStripMenuItem();
-            mainTabControl = new TabControl();
+            mainTabControl = new DarkTabControl();
             mainTab = new TabPage();
             fileBox = new FlickerFreeListBox();
             statusStrip1 = new StatusStrip();
@@ -166,7 +166,9 @@
             mainTab.Name = "mainTab";
             mainTab.Size = new Size(1191, 652);
             mainTab.TabIndex = 0;
-            mainTab.UseVisualStyleBackColor = true;
+            mainTab.BackColor = Color.Black;
+            mainTab.ForeColor = Color.White;
+            mainTab.UseVisualStyleBackColor = false;
             // 
             // fileBox
             // 
@@ -234,7 +236,7 @@
         private ToolStripMenuItem extractToolStripMenuItem;
         private ToolStripMenuItem compressToolStripMenuItem;
         private ToolStripMenuItem SettingsToolStripMenuItem;
-        private TabControl mainTabControl;
+        private DarkTabControl mainTabControl;
         private TabPage mainTab;
         private FlickerFreeListBox fileBox;
         private ToolStripMenuItem OpenToolStripMenuItem;

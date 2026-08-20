@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace TANGERINE_ZIP
@@ -15,12 +16,46 @@ namespace TANGERINE_ZIP
 
         private const int WM_KEYDOWN = 0x0100;
 
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+        [DllImport("uxtheme.dll", CharSet = CharSet.Unicode)]
+        private static extern int SetWindowTheme(
+            IntPtr hWnd,
+            string pszSubAppName,
+            string pszSubIdList);
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(
+            IntPtr hwnd,
+            int dwAttribute,
+            ref int pvAttribute,
+            int cbAttribute);
+
         public event EventHandler? ViewChanged;
 
         public FlickerFreeListBox()
         {
             DoubleBuffered = true;
             ResizeRedraw = true;
+        }
+
+        protected override void OnHandleCreated(
+            EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            int darkMode = 1;
+
+            DwmSetWindowAttribute(
+                Handle,
+                DWMWA_USE_IMMERSIVE_DARK_MODE,
+                ref darkMode,
+                sizeof(int));
+
+            SetWindowTheme(
+                Handle,
+                "DarkMode_Explorer",
+                null!);
         }
 
         protected override void WndProc(ref Message m)
