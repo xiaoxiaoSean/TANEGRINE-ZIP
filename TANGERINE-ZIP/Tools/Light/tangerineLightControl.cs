@@ -54,7 +54,20 @@ namespace TANGERINE_ZIP.Tools.LightTool
         [Category("Tangerine Light")]
         [Description("光照颜色")]
         [DefaultValue(typeof(Color), "White")]
-        public Color GlowColor { get; set; } = Color.White;
+        public Color GlowColor
+        {
+            get => _glowColor;
+            set
+            {
+                if (_glowColor == value)
+                    return;
+
+                _glowColor = value;
+                Invalidate();
+            }
+        }
+
+        private Color _glowColor = Color.White;
 
         [Category("Tangerine Light")]
         [Description("外部光晕强度")]

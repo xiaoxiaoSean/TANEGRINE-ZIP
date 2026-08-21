@@ -493,10 +493,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
             set
             {
                 _targetFps =
-                    Math.Clamp(
-                        value,
-                        15,
-                        240);
+                value;
 
                 _minFrameMilliseconds =
                     1000.0 /
@@ -606,10 +603,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             set =>
                 _lightStrength =
-                    Math.Clamp(
-                        value,
-                        0f,
-                        1f);
+       value;
         }
 
         [Browsable(false)]
@@ -621,10 +615,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             set =>
                 _edgeStrength =
-                    Math.Clamp(
-                        value,
-                        0f,
-                        2f);
+                    value;
         }
 
         [Browsable(false)]
@@ -636,10 +627,7 @@ namespace TANGERINE_ZIP.Tools.LightTool
 
             set =>
                 _edgeWidth =
-                    Math.Clamp(
-                        value,
-                        0.5f,
-                        6f);
+                    value;
         }
 
         [Browsable(false)]
