@@ -55,13 +55,11 @@ namespace TANGERINE_ZIP
             extractToFolderALLToolStripMenuItem.Text = LanguageManager.Get("extractToFolderALLText");
             extractDirectlySELECTEDToolStripMenuItem.Text = LanguageManager.Get("extractDirectlySELECTEDText");
             extractToAFolderSELECTEDToolStripMenuItem.Text = LanguageManager.Get("extractToAFolderSELECTEDText");
-            goToParentDirectoryToolStripMenuItem.Text = LanguageManager.Get("goToParentDirectoryText");
             #endregion
             #region set visibility
             uninstallFileToolStripMenuItem.Visible = false;
             extractToolStripMenuItem.Visible = false;
-            compressToolStripMenuItem.Visible = false;
-            goToParentDirectoryToolStripMenuItem.Visible = false;
+            compressToolStripMenuItem.Visible = true;
             #endregion
         }
 
@@ -1248,17 +1246,17 @@ namespace TANGERINE_ZIP
         {
             MessageBox.Show(LanguageManager.Get("Unavailble1"), "TZIP");
         }
+        private void compressSelectFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreeFilePickerForm ffpf = new FreeFilePickerForm();
+            ffpf.ShowDialog();
+        }
 
-        private void TZIPToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TZIPToolStripMenuItem_DoubleClick(object sender, EventArgs e)
         {
             TZIPForm tZIPForm = new TZIPForm();
             tZIPForm.ShowDialog();
             tZIPForm.Dispose();
-        }
-
-        private void goToParentDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

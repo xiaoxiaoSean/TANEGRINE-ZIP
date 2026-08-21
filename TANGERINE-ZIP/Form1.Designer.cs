@@ -52,7 +52,6 @@ namespace TANGERINE_ZIP
             mainOpenFileDialog = new OpenFileDialog();
             mainSaveFileDialog = new SaveFileDialog();
             mainFolderBrowserDialog = new FolderBrowserDialog();
-            goToParentDirectoryToolStripMenuItem = new ToolStripMenuItem();
             mainMenu.SuspendLayout();
             mainTabControl.SuspendLayout();
             mainTab.SuspendLayout();
@@ -63,7 +62,7 @@ namespace TANGERINE_ZIP
             // 
             mainMenu.BackColor = Color.Black;
             mainMenu.ImageScalingSize = new Size(24, 24);
-            mainMenu.Items.AddRange(new ToolStripItem[] { TZIPToolStripMenuItem, OpenToolStripMenuItem, extractToolStripMenuItem, compressToolStripMenuItem, SettingsToolStripMenuItem, uninstallFileToolStripMenuItem, goToParentDirectoryToolStripMenuItem });
+            mainMenu.Items.AddRange(new ToolStripItem[] { TZIPToolStripMenuItem, OpenToolStripMenuItem, extractToolStripMenuItem, compressToolStripMenuItem, SettingsToolStripMenuItem, uninstallFileToolStripMenuItem });
             mainMenu.Location = new Point(0, 0);
             mainMenu.Name = "mainMenu";
             mainMenu.Size = new Size(1199, 32);
@@ -75,7 +74,7 @@ namespace TANGERINE_ZIP
             TZIPToolStripMenuItem.Name = "TZIPToolStripMenuItem";
             TZIPToolStripMenuItem.Size = new Size(63, 28);
             TZIPToolStripMenuItem.Text = "TZIP";
-            TZIPToolStripMenuItem.Click += TZIPToolStripMenuItem_Click;
+            TZIPToolStripMenuItem.DoubleClick += TZIPToolStripMenuItem_DoubleClick;
             // 
             // OpenToolStripMenuItem
             // 
@@ -135,6 +134,7 @@ namespace TANGERINE_ZIP
             compressSelectFileToolStripMenuItem.Name = "compressSelectFileToolStripMenuItem";
             compressSelectFileToolStripMenuItem.Size = new Size(244, 34);
             compressSelectFileToolStripMenuItem.Text = "Select (a) file (s)";
+            compressSelectFileToolStripMenuItem.Click += compressSelectFileToolStripMenuItem_Click;
             // 
             // SettingsToolStripMenuItem
             // 
@@ -211,14 +211,6 @@ namespace TANGERINE_ZIP
             // 
             mainOpenFileDialog.FileName = "openFileDialog1";
             // 
-            // goToParentDirectoryToolStripMenuItem
-            // 
-            goToParentDirectoryToolStripMenuItem.ForeColor = Color.White;
-            goToParentDirectoryToolStripMenuItem.Name = "goToParentDirectoryToolStripMenuItem";
-            goToParentDirectoryToolStripMenuItem.Size = new Size(218, 28);
-            goToParentDirectoryToolStripMenuItem.Text = "Go to parent directory";
-            goToParentDirectoryToolStripMenuItem.Click += goToParentDirectoryToolStripMenuItem_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
@@ -264,6 +256,5 @@ namespace TANGERINE_ZIP
         private ToolStripMenuItem compressSelectFileToolStripMenuItem;
         private SaveFileDialog mainSaveFileDialog;
         private FolderBrowserDialog mainFolderBrowserDialog;
-        private ToolStripMenuItem goToParentDirectoryToolStripMenuItem;
     }
 }
