@@ -72,7 +72,9 @@ namespace TANGERINE_ZIP
             // 
             // fileListBox
             // 
+            fileListBox.BackColor = Color.Black;
             fileListBox.Dock = DockStyle.Fill;
+            fileListBox.ForeColor = Color.White;
             fileListBox.FormattingEnabled = true;
             fileListBox.Location = new Point(3, 126);
             fileListBox.Name = "fileListBox";

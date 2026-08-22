@@ -7,13 +7,19 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TANGERINE_ZIP.Tools;
+using TANGERINE_ZIP.Tools.LightTool;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ScrollBar;
 //first 5 letters of stage code:FFPCF
 namespace TANGERINE_ZIP
 {
     public partial class FreeFilePickerForm : Form
     {
         private string? currentPath;
+        private TangerineLightOverlay? _lightOverlay;
 
+        private System.Windows.Forms.Timer? _fileBoxScrollTimer;
+
+        private float _normalEdgeStrength;
         public FreeFilePickerForm()
         {
             InitializeComponent();
@@ -138,8 +144,76 @@ DriveInfo[] drives;
         }
         private void FreeFilePickerForm_Load(object sender, EventArgs e)
         {
+            #region set light effect
+            _lightOverlay = new TangerineLightOverlay(this);
+            _lightOverlay.TargetFps = 60;
+            _lightOverlay.Radius = 180f;
+            _lightOverlay.LightStrength = 0.02f;
+            _lightOverlay.EdgeStrength = 7.9f;
+            _lightOverlay.EdgeWidth = 3f;
+            _lightOverlay.disableWhenMouseSpeedGetTooFast = 100000;
+            _normalEdgeStrength = _lightOverlay.EdgeStrength;
+            _fileBoxScrollTimer =
+                new System.Windows.Forms.Timer
+                {
+                    Interval = 120
+                };
+            _fileBoxScrollTimer.Tick += FileListBoxScrollTimer_Tick;
+            fileListBox.ViewChanged += FileListBox_ViewChanged;
+            _lightOverlay.Show(this);
+            #endregion
             confirmButton.Text=LanguageManager.Get("Confirm");
             LoadDrives();
+        }
+        private void FileListBoxScrollTimer_Tick(
+         object? sender,
+         EventArgs e)
+        {
+            _fileBoxScrollTimer?.Stop();
+
+            if (_lightOverlay == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                _normalEdgeStrength;
+
+            _lightOverlay.InvalidateCapture();
+        }
+        private void FileBox_ViewChanged(
+           object? sender,
+           EventArgs e)
+        {
+            if (_lightOverlay == null ||
+                _fileBoxScrollTimer == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                0f;
+
+            _fileBoxScrollTimer.Stop();
+            _fileBoxScrollTimer.Start();
+            _lightOverlay?.InvalidateCapture();
+        }
+        private void FileListBox_ViewChanged(
+           object? sender,
+           EventArgs e)
+        {
+            if (_lightOverlay == null ||
+                _fileBoxScrollTimer == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                0f;
+
+            _fileBoxScrollTimer.Stop();
+            _fileBoxScrollTimer.Start();
+            _lightOverlay?.InvalidateCapture();
         }
     }
 }
