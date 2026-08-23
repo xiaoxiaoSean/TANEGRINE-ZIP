@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using TANGERINE_ZIP.Tools.LightTool;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ScrollBar;
 
 namespace TANGERINE_ZIP
 {
@@ -17,8 +19,31 @@ namespace TANGERINE_ZIP
         bool aow = false;
         bool askip = false;
         int output = -1;
+        private TangerineLightOverlay? _lightOverlay;
+
+        private System.Windows.Forms.Timer? _fileBoxScrollTimer;
+
+        private float _normalEdgeStrength;
         private void OverWriteOrNotForm_Load(object sender, EventArgs e)
         {
+            #region set light effect
+            _lightOverlay = new TangerineLightOverlay(this);
+            _lightOverlay.TargetFps = 60;
+            _lightOverlay.Radius = 120f;
+            _lightOverlay.LightStrength = 0.02f;
+            _lightOverlay.EdgeStrength = 3.9f;
+            _lightOverlay.EdgeWidth = 3f;
+            _lightOverlay.disableWhenMouseSpeedGetTooFast = 100000;
+            _normalEdgeStrength = _lightOverlay.EdgeStrength;
+            _fileBoxScrollTimer =
+                new System.Windows.Forms.Timer
+                {
+                    Interval = 120
+                };
+            _fileBoxScrollTimer.Tick += FileBoxScrollTimer_Tick;
+            listBox1.ViewChanged += FileBox_ViewChanged;
+            _lightOverlay.Show(this);
+            #endregion
             this.Text = LanguageManager.Get("OverWriteOrNot");
             label1.Text = LanguageManager.Get("OverWriteText");
             button1.Text = LanguageManager.Get("Execute");
@@ -36,6 +61,39 @@ namespace TANGERINE_ZIP
             {
                 listBox1.EndUpdate();
             }
+        }
+        private void FileBoxScrollTimer_Tick(
+            object? sender,
+            EventArgs e)
+        {
+            _fileBoxScrollTimer?.Stop();
+
+            if (_lightOverlay == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                _normalEdgeStrength;
+
+            _lightOverlay.InvalidateCapture();
+        }
+        private void FileBox_ViewChanged(
+            object? sender,
+            EventArgs e)
+        {
+            if (_lightOverlay == null ||
+                _fileBoxScrollTimer == null)
+            {
+                return;
+            }
+
+            _lightOverlay.EdgeStrength =
+                0f;
+
+            _fileBoxScrollTimer.Stop();
+            _fileBoxScrollTimer.Start();
+            _lightOverlay?.InvalidateCapture();
         }
         public void SyncBool(ref bool allOverWrite)
         {

@@ -76,6 +76,7 @@ namespace TANGERINE_ZIP
             listBox1.Name = "listBox1";
             listBox1.Size = new Size(744, 433);
             listBox1.TabIndex = 1;
+            listBox1.ViewChanged += FileBox_ViewChanged;
             // 
             // pictureBox1
             // 
@@ -119,8 +120,8 @@ namespace TANGERINE_ZIP
 
         private TableLayoutPanel tableLayoutPanel1;
         private Label label1;
-        private ListBox listBox1;
         private PictureBox pictureBox1;
         private Button button1;
+        private FlickerFreeListBox listBox1;
     }
 }

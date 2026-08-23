@@ -28,9 +28,9 @@ namespace TANGERINE_ZIP
             #region set light effect
             _lightOverlay = new TangerineLightOverlay(this);
             _lightOverlay.TargetFps = 60;
-            _lightOverlay.Radius = 180f;
+            _lightOverlay.Radius = 120f;
             _lightOverlay.LightStrength = 0.02f;
-            _lightOverlay.EdgeStrength = 7.9f;
+            _lightOverlay.EdgeStrength = 1.9f;
             _lightOverlay.EdgeWidth = 3f;
             _lightOverlay.disableWhenMouseSpeedGetTooFast = 100000;
             _normalEdgeStrength = _lightOverlay.EdgeStrength;
