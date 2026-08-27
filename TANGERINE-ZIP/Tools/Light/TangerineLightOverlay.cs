@@ -1557,7 +1557,30 @@ namespace TANGERINE_ZIP.Tools.LightTool
         }
 
         #endregion
+        public void Reload()
+        {
+            if (IsDisposed ||
+                _targetForm.IsDisposed ||
+                !_targetForm.IsHandleCreated)
+            {
+                return;
+            }
 
+            // 丢弃当前捕获画面
+            _captureDirty = true;
+
+            // 强制下一次重新计算坐标
+            UpdateCoordinateCorrection();
+
+            // 如果 Overlay 当前不可见，重新显示
+            if (!Visible)
+            {
+                Show(_targetForm);
+            }
+
+            // 让 Overlay 立即参与下一轮绘制
+            Invalidate();
+        }
         #region Render
 
         private async void Render(

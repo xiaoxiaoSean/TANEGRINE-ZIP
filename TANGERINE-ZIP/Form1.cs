@@ -11,18 +11,18 @@ namespace TANGERINE_ZIP
 {
     public partial class Form1 : Form
     {
-        private TangerineLightOverlay? _lightOverlay;
-
-        private System.Windows.Forms.Timer? _fileBoxScrollTimer;
-
-        private float _normalEdgeStrength;
 
         public Form1()
         {
             InitializeComponent();
         }
+        private TangerineLightOverlay? _lightOverlay;
+        private System.Windows.Forms.Timer? _fileBoxScrollTimer;
+        private float _normalEdgeStrength;
         string zippath = string.Empty;//file path of the zip file
         bool isDoingJob = false;
+        private List<string> _archiveEntries = new();
+        private string _archiveCurrentDirectory = "";
         private void Form1_Load(object sender, EventArgs e)
         {
             #region set light effect
@@ -61,6 +61,38 @@ namespace TANGERINE_ZIP
             extractToolStripMenuItem.Visible = false;
             compressToolStripMenuItem.Visible = true;
             #endregion
+            fileBox.SetItemColorProvider(
+    index =>
+    {
+        string displayName =
+            fileBox.Items[index]?.ToString() ?? "";
+
+        // 空白项
+        if (string.IsNullOrEmpty(displayName))
+        {
+            return Color.White;
+        }
+
+        // 返回上一级
+        if (displayName ==
+            LanguageManager.Get(
+                "goToParentDirectoryText"))
+        {
+            return Color.White;
+        }
+
+        string path =
+            FindEntryPath(displayName);
+
+        // 文件夹：浅黄色
+        if (path.EndsWith("/"))
+        {
+            return Color.Yellow;
+        }
+
+        // 文件：白色
+        return Color.White;
+    });
         }
 
         private void FileBox_ViewChanged(
@@ -168,23 +200,174 @@ namespace TANGERINE_ZIP
         private async Task LoadArchiveAsync(string zippath)
         {
             isDoingJob = true;
-            List<string> items =
-                await Task.Run(() =>
+
+            try
             {
-                List<string> result = new();
+                List<string> items =
+                    await Task.Run(() =>
+                    {
+                        List<string> result = new();
 
-                using var archive = ArchiveFactory.OpenArchive(zippath);
+                        using var archive = ArchiveFactory.OpenArchive(zippath);
 
-                foreach (var entry in archive.Entries)
+                        foreach (var entry in archive.Entries)
+                        {
+                            string entryKey = entry.Key.Replace('\\', '/');
+
+                            if (entry.IsDirectory)
+                            {
+                                if (!entryKey.EndsWith("/"))
+                                {
+                                    entryKey += "/";
+                                }
+                            }
+
+                            result.Add(entryKey);
+                        }
+
+                        return result;
+                    });
+
+                _archiveEntries = items;
+                _archiveCurrentDirectory = "";
+                fileBox.Items.Clear();
+
+                fileBox.Items.AddRange(
+                    items.ConvertAll(
+                        item => (object)item)
+                    .ToArray());
+                RefreshFileBox();
+
+                _fileBoxScrollTimer?.Stop();
+
+                if (_lightOverlay != null)
                 {
-                    result.Add(
-                        entry.IsDirectory
-                            ? entry.Key + "/"
-                            : entry.Key);
+                    _lightOverlay.EdgeStrength =
+                        _normalEdgeStrength;
+
+                    _lightOverlay.InvalidateCapture();
                 }
 
-                return result;
-            });
+                statusLabel.Text =
+                    LanguageManager.Get("readytext");
+
+                statusProgressBar.Value =
+                    100;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("TZIP");
+                MessageBox.Show(
+                    MessageTipGenerator.GenerateTip(
+                        "F00010052",
+                        ex.Message)); //F00010052
+            }
+            finally
+            {
+                isDoingJob = false;
+            }
+        }
+        private void RefreshFileBox()
+        {
+            List<object> displayItems = new();
+
+            if (string.IsNullOrEmpty(_archiveCurrentDirectory))
+            {
+                // 根目录第一项为空
+                displayItems.Add("");
+            }
+            else
+            {
+                // 非根目录第一项为返回上一级
+                displayItems.Add(
+                    LanguageManager.Get(
+                        "goToParentDirectoryText"));
+            }
+
+            HashSet<string> addedDirectories = new();
+
+            foreach (string entry in _archiveEntries)
+            {
+                string normalizedEntry =
+                    entry.Replace('\\', '/');
+
+                string relativePath;
+
+                if (string.IsNullOrEmpty(_archiveCurrentDirectory))
+                {
+                    relativePath = normalizedEntry;
+                }
+                else
+                {
+                    if (!normalizedEntry.StartsWith(
+                        _archiveCurrentDirectory,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    relativePath =
+                        normalizedEntry.Substring(
+                            _archiveCurrentDirectory.Length);
+                }
+
+                if (string.IsNullOrEmpty(relativePath))
+                {
+                    continue;
+                }
+
+                int slashIndex =
+                    relativePath.IndexOf('/');
+
+                if (slashIndex == -1)
+                {
+                    /*
+                     * 文件
+                     *
+                     * 实际：
+                     *     folder/test.txt
+                     *
+                     * 显示：
+                     *     test.txt
+                     */
+                    displayItems.Add(
+                        relativePath);
+                }
+                else
+                {
+                    /*
+                     * 文件夹
+                     *
+                     * relativePath：
+                     *     folder2/test.txt
+                     *
+                     * directoryName：
+                     *     folder2/
+                     */
+                    string directoryName =
+                        relativePath.Substring(
+                            0,
+                            slashIndex + 1);
+
+                    string fullDirectoryPath =
+                        _archiveCurrentDirectory +
+                        directoryName;
+
+                    if (addedDirectories.Add(
+                        fullDirectoryPath))
+                    {
+                        /*
+                         * 只显示文件夹名称，不显示路径。
+                         *
+                         * folder2/
+                         *     ↓
+                         * folder2
+                         */
+                        displayItems.Add(
+                            directoryName.TrimEnd('/'));
+                    }
+                }
+            }
 
             fileBox.SuspendLayout();
             fileBox.BeginUpdate();
@@ -192,10 +375,11 @@ namespace TANGERINE_ZIP
             try
             {
                 fileBox.Items.Clear();
-                fileBox.Items.AddRange(
-                    items.ConvertAll(
-                        item => (object)item)
-                    .ToArray());
+
+                foreach (object item in displayItems)
+                {
+                    fileBox.Items.Add(item);
+                }
             }
             finally
             {
@@ -203,7 +387,8 @@ namespace TANGERINE_ZIP
                 fileBox.ResumeLayout(true);
             }
 
-            _fileBoxScrollTimer?.Stop();
+            fileBox.Invalidate(true);
+            fileBox.Update();
 
             if (_lightOverlay != null)
             {
@@ -212,14 +397,6 @@ namespace TANGERINE_ZIP
 
                 _lightOverlay.InvalidateCapture();
             }
-
-            statusLabel.Text =
-                LanguageManager.Get("readytext");
-
-            statusProgressBar.Value =
-                100;
-
-            isDoingJob = false;
         }
         private async Task ExtractSelectedEntriesDIRECTLYAsync(
     string zippath,
@@ -2183,6 +2360,255 @@ namespace TANGERINE_ZIP
         private void compressToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void fileBox_DoubleClick(
+       object? sender,
+       EventArgs e)
+        {
+            if (fileBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            string selectedItem =
+                fileBox.SelectedItem.ToString() ?? "";
+
+            // 根目录第一项为空
+            if (string.IsNullOrEmpty(
+                    _archiveCurrentDirectory) &&
+                string.IsNullOrEmpty(selectedItem))
+            {
+                return;
+            }
+
+            // 返回上一级
+            if (selectedItem ==
+                LanguageManager.Get(
+                    "goToParentDirectoryText"))
+            {
+                GoToParentDirectory();
+                return;
+            }
+
+            // 查找当前显示项目对应的真实路径
+            string selectedPath =
+                    FindEntryPath(selectedItem);
+
+            if (string.IsNullOrEmpty(selectedPath))
+            {
+                return;
+            }
+
+            // 只有目录可以进入
+            if (!selectedPath.EndsWith("/"))
+            {
+                return;
+            }
+
+            _archiveCurrentDirectory =
+                selectedPath;
+
+            RefreshFileBox();
+
+            fileBox.ClearSelected();
+        }
+        private string FindEntryPath(
+    string displayName)
+        {
+            string currentDirectory =
+                _archiveCurrentDirectory.Replace('\\', '/');
+
+            if (!string.IsNullOrEmpty(currentDirectory) &&
+                !currentDirectory.EndsWith("/"))
+            {
+                currentDirectory += "/";
+            }
+
+            foreach (string entry in _archiveEntries)
+            {
+                string normalizedEntry =
+                    entry.Replace('\\', '/');
+
+                // 必须位于当前目录
+                if (!normalizedEntry.StartsWith(
+                    currentDirectory,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                string relativePath =
+                    normalizedEntry.Substring(
+                        currentDirectory.Length);
+
+                if (string.IsNullOrEmpty(relativePath))
+                {
+                    continue;
+                }
+
+                /*
+                 * 只处理当前目录下的第一层。
+                 *
+                 * 例如：
+                 *
+                 * 当前目录：
+                 *     folder1/
+                 *
+                 * entry：
+                 *     folder1/folder2/test.txt
+                 *
+                 * relativePath：
+                 *     folder2/test.txt
+                 *
+                 * 这不是当前显示的直接项目。
+                 */
+                int slashIndex =
+                    relativePath.IndexOf('/');
+
+                if (slashIndex >= 0)
+                {
+                    string directoryName =
+                        relativePath.Substring(
+                            0,
+                            slashIndex);
+
+                    if (string.Equals(
+                        directoryName,
+                        displayName,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        return currentDirectory +
+                               directoryName +
+                               "/";
+                    }
+                }
+                else
+                {
+                    /*
+                     * 当前目录下的普通文件
+                     */
+                    if (string.Equals(
+                        relativePath,
+                        displayName,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        return currentDirectory +
+                               relativePath;
+                    }
+                }
+            }
+
+            return "";
+        }
+        private string GetEntryPath(
+    string displayName)
+        {
+            string targetPath =
+                _archiveCurrentDirectory +
+                displayName;
+
+            targetPath =
+                targetPath.Replace('\\', '/');
+
+            foreach (string entry in _archiveEntries)
+            {
+                string normalizedEntry =
+                    entry.Replace('\\', '/');
+
+                if (string.Equals(
+                    normalizedEntry,
+                    targetPath,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return normalizedEntry;
+                }
+
+                // 当前显示的是文件夹名称
+                if (normalizedEntry.EndsWith("/") &&
+                    string.Equals(
+                        normalizedEntry.TrimEnd('/'),
+                        targetPath,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return normalizedEntry;
+                }
+            }
+
+            return "";
+        }
+        private List<string> GetSelectedArchiveEntries()
+        {
+            List<string> result = new();
+
+            foreach (object selectedItem in fileBox.SelectedItems)
+            {
+                string displayName =
+                    selectedItem.ToString() ?? "";
+
+                /*
+                 * 空白项：
+                 * 根目录第一项，不是文件。
+                 */
+                if (string.IsNullOrEmpty(displayName))
+                {
+                    continue;
+                }
+
+                /*
+                 * 返回上一级：
+                 * 不是文件。
+                 */
+                if (displayName ==
+                    LanguageManager.Get(
+                        "goToParentDirectoryText"))
+                {
+                    continue;
+                }
+
+                string entryPath =
+                    GetEntryPath(displayName);
+
+                if (!string.IsNullOrEmpty(entryPath))
+                {
+                    result.Add(entryPath);
+                }
+            }
+
+            return result;
+        }
+        private void GoToParentDirectory()
+        {
+            if (string.IsNullOrEmpty(_archiveCurrentDirectory))
+            {
+                return;
+            }
+
+            string currentDirectory =
+                _archiveCurrentDirectory.TrimEnd('/');
+
+            int slashIndex =
+                currentDirectory.LastIndexOf('/');
+
+            if (slashIndex == -1)
+            {
+                // folder/
+                // 返回根目录
+                _archiveCurrentDirectory = "";
+            }
+            else
+            {
+                // folder/sub/
+                // 返回 folder/
+                _archiveCurrentDirectory =
+                    currentDirectory.Substring(
+                        0,
+                        slashIndex + 1);
+            }
+
+            RefreshFileBox();
+
+            fileBox.ClearSelected();
         }
     }
 }

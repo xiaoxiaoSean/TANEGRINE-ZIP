@@ -266,4 +266,10 @@
   <data name="Confirm" xml:space="preserve">
     <value>確認</value>
   </data>
+  <data name="YouAreCurrentlyAt" xml:space="preserve">
+    <value>你現在位於</value>
+  </data>
+  <data name="Root" xml:space="preserve">
+    <value>根</value>
+  </data>
 </root>
