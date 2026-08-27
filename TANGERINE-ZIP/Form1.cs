@@ -126,8 +126,27 @@ namespace TANGERINE_ZIP
 
             _lightOverlay.EdgeStrength =
                 _normalEdgeStrength;
-
+            
             _lightOverlay.InvalidateCapture();
+        }
+        private void refreshCurrentDirectory()
+        {
+            if (!string.IsNullOrEmpty(zippath))
+            {
+                if (string.IsNullOrEmpty(_archiveCurrentDirectory))
+                {
+                    statusLabel.Text = LanguageManager.Get("YouAreCurrentlyAt") + LanguageManager.Get("Root");
+                }
+                else
+                {
+ statusLabel.Text=LanguageManager.Get("YouAreCurrentlyAt")+" "+ _archiveCurrentDirectory;
+                }               
+            }
+            else
+            {
+                //F00010100
+                statusLabel.Text = "F00010100";
+            }
         }
         private async void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -266,6 +285,7 @@ namespace TANGERINE_ZIP
             {
                 isDoingJob = false;
             }
+            refreshCurrentDirectory();
         }
         private void RefreshFileBox()
         {
@@ -2222,7 +2242,7 @@ namespace TANGERINE_ZIP
             }
             catch (Exception ex)
             {
-                ShowErrorMessage(ex.Message);
+                ShowErrorMessage(MessageTipGenerator.GenerateTip("F0010201",ex.ToString()));//F00010201
             }
         }
         void ShowErrorMessage(string message)
@@ -2251,6 +2271,38 @@ namespace TANGERINE_ZIP
             extractToolStripMenuItem.Visible = false;
             compressToolStripMenuItem.Visible = false;
             uninstallFileToolStripMenuItem.Visible = false;
+            // 清除压缩包数据
+            _archiveEntries.Clear();
+
+            // 回到根目录
+            _archiveCurrentDirectory = "";
+
+            // 清除 fileBox 显示内容
+            fileBox.Items.Clear();
+
+            // 清除选择状态
+            fileBox.ClearSelected();
+
+            // 强制 ListBox 重新绘制
+            fileBox.Invalidate(true);
+            fileBox.Update();
+
+            // 停止 fileBox 相关计时器
+            _fileBoxScrollTimer?.Stop();
+
+            // 清除光效捕获缓存
+            if (_lightOverlay != null)
+            {
+                _lightOverlay.InvalidateCapture();
+            }
+
+            // 重置状态栏
+            statusProgressBar.Value = 0;
+            statusLabel.Text =
+                LanguageManager.Get("readytext");
+
+            // 当前没有正在进行的任务
+            isDoingJob = false;
             mainTab.Text = LanguageManager.Get("mainTabText");
         }
         private void extractToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2412,6 +2464,7 @@ namespace TANGERINE_ZIP
             RefreshFileBox();
 
             fileBox.ClearSelected();
+            refreshCurrentDirectory();
         }
         private string FindEntryPath(
     string displayName)
@@ -2609,6 +2662,7 @@ namespace TANGERINE_ZIP
             RefreshFileBox();
 
             fileBox.ClearSelected();
+            refreshCurrentDirectory();
         }
     }
 }
