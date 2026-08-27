@@ -128,11 +128,12 @@ namespace TANGERINE_ZIP
             compressToolStripMenuItem.Name = "compressToolStripMenuItem";
             compressToolStripMenuItem.Size = new Size(108, 28);
             compressToolStripMenuItem.Text = "compress";
+            compressToolStripMenuItem.Click += compressToolStripMenuItem_Click;
             // 
             // compressSelectFileToolStripMenuItem
             // 
             compressSelectFileToolStripMenuItem.Name = "compressSelectFileToolStripMenuItem";
-            compressSelectFileToolStripMenuItem.Size = new Size(244, 34);
+            compressSelectFileToolStripMenuItem.Size = new Size(270, 34);
             compressSelectFileToolStripMenuItem.Text = "Select (a) file (s)";
             compressSelectFileToolStripMenuItem.Click += compressSelectFileToolStripMenuItem_Click;
             // 
